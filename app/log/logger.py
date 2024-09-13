@@ -4,7 +4,7 @@ import os
 
 
 def setup_logger():
-    log_path = ''
+    log_path = 'logs'
     os.makedirs(log_path, exist_ok=True)
     current_date = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
     log_file = f"atendimentos_{current_date}.log"

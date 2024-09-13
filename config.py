@@ -9,6 +9,8 @@ class Config():
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     
     PERMANENT_SESSION_LIFETIME = timedelta(minutes=120)
+    SESSION_FILE_THRESHOLD = 200
+    SESSION_TYPE = 'filesystem'
     MAIL_SERVER = 'email-ssl.com.br'
     MAIL_PORT = 587
     MAIL_USE_TLS = True

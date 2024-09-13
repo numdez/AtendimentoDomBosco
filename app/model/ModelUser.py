@@ -1,4 +1,4 @@
-from .entidades.user import user
+from .entidades.user import User
 
 
 class ModelUser():

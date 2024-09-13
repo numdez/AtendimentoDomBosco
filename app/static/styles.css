@@ -1,0 +1,164 @@
+/* Estilos Globais */
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f4f6f9;
+    color: #343a40;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 500;
+}
+
+/* Customização da Navbar */
+.navbar {
+    background-color: #343a40;
+}
+
+.navbar a {
+    color: #ffffff !important;
+}
+
+.navbar-brand {
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+.nav-link {
+    margin-left: 15px;
+}
+
+.navbar .btn-logout {
+    background-color: #dc3545;
+    color: white !important;
+    padding: 5px 10px;
+    border-radius: 4px;
+}
+
+.navbar .btn-logout:hover {
+    background-color: #c82333;
+}
+
+/* Sidebar (Menu lateral) */
+.list-group-item {
+    font-weight: 500;
+    color: #343a40;
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+}
+
+.list-group-item:hover {
+    background-color: #f8f9fa;
+    color: #007bff;
+}
+
+/* Cartão de conteúdo principal */
+.card {
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+    background-color: #007bff;
+    color: white;
+    font-weight: 500;
+}
+
+.card-body {
+    background-color: #ffffff;
+}
+
+/* Links no conteúdo */
+a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* Botões */
+.btn {
+    padding: 10px 20px;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    border-color: #6c757d;
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268;
+    border-color: #545b62;
+}
+
+/* Estilos para o rodapé */
+footer {
+    background-color: #f8f9fa;
+    padding: 20px 0;
+    border-top: 1px solid #ddd;
+}
+
+footer p {
+    margin: 0;
+    color: #6c757d;
+}
+
+footer .footer-links a {
+    margin-right: 15px;
+    color: #343a40;
+}
+
+footer .footer-links a:hover {
+    color: #007bff;
+    text-decoration: underline;
+}
+
+/* Títulos customizados */
+h1 {
+    font-size: 2rem;
+    color: #007bff;
+    margin-bottom: 20px;
+}
+
+h5 {
+    font-size: 1.25rem;
+    color: #343a40;
+}
+
+/* Margens de seções */
+.section {
+    margin-bottom: 30px;
+}
+
+/* Estilos responsivos */
+@media (max-width: 768px) {
+    .navbar-brand {
+        font-size: 1.25rem;
+    }
+
+    .navbar-nav .nav-link {
+        margin-left: 0;
+        padding-left: 10px;
+    }
+
+    .card {
+        margin-bottom: 20px;
+    }
+
+    footer {
+        text-align: center;
+    }
+}

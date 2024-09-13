@@ -24,5 +24,5 @@ lm.init_app(app)
 
 
 from app.model import forms, ModelUser
-from app.controller import routes
+from app.controller import rotas
 

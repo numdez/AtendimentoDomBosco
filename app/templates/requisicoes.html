@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}Requisições - Sistema de Atendimento{% endblock %}
+
+{% block styles %}
+    <style>
+        .card-body a {
+            text-decoration: none;
+            color: black;
+        }
+
+        .card-body a:hover {
+            color:#007BFF;
+        }
+
+        .requisicao-item {
+            background-color: #f8f9fa;
+            color:black;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="card">
+        <div class="card-header">
+            Requisições
+        </div>
+        <div class="card-body">
+            <div class="requisicao-item"><a href="#1">Requisição 1: Aguardando Aprovação</a></div>
+            <div class="requisicao-item"><a href="#2">Requisição 2: Aprovada</a></div>
+        </div>
+    </div>    
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        console.log('Página de requisições carregada');
+    </script>
+{% endblock %}
