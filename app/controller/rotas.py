@@ -1,12 +1,12 @@
 from app.model.ModelUser import ModelUser
+from app.controller.auth import Auth
 from app.model.forms import LoginForm
 from app.model.entidades.user import User
 from app.log.logger import log_action
 
 from flask_login import logout_user, login_user, login_required, current_user
 from flask import render_template, flash, redirect, url_for, request, abort, session, jsonify, flash, send_file, make_response
-from datetime import timedelta, datetime
-from io import BytesIO
+from datetime import timedelta
 from pandas import DataFrame
 from app import app, lm
 
@@ -25,11 +25,13 @@ def index():
     form = LoginForm()
     next_url = form.next.data 
     if current_user.is_authenticated:
-        if next_url != '' or next_url != None:
+        if next_url:
             return redirect(next_url)
         session['ultAbaAberta'] = 'home'
         return redirect(url_for('home'))
     if form.validate_on_submit():
+        if next_url:
+            return redirect(next_url)
         user = User(0, form.email.data, form.password.data)
         
         logged_user = ModelUser.login(db, user)

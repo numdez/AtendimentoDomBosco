@@ -9,3 +9,6 @@ class LoginForm(FlaskForm):
     lembrar = BooleanField("Lembrar de mim")
     next = StringField()
 
+class AtendimentoForm(FlaskForm):
+    nome = StringField("Nome", validators=[DataRequired()])
+
