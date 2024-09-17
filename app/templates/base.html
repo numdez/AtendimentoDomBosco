@@ -17,7 +17,7 @@
 </head>
 <body>
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <nav class="navbar navbar-expand-lg navbar-brand bg-light">
         <div class="container-fluid">
             <a class="navbar-brand" href="{{ url_for('index') }}">Sistema de Atendimento</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Alternar navegação">
@@ -48,7 +48,7 @@
             </aside>
 
             <!-- Conteúdo principal -->
-            <main class="col-md-9">
+            <main class="col-md-9 bg-here">
                 {% block content %}
                 <div class="card">
                     <div class="card-header">

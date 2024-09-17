@@ -68,6 +68,10 @@ def home():
 def index():
     return render_template('base.html')
 
+@app.route('/teste')
+def teste():
+    return render_template('testeBase.html')
+
 @app.route('/dashboard')
 def dashboard():
     return render_template('dashboard.html')
