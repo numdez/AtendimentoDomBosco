@@ -15,10 +15,11 @@
     <!-- Bloco para CSS específico de cada página -->
      <style>
         .bg-here{
-            background-image: url("{{ url_for('static', filename='resources/login_bg.png') }}");
+            background: url("{{ url_for('static', filename='resources/login_bg.png') }}");
             background-size: cover; /* Cobrirá toda a tela */
+            height: 100vh;
             background-position: center center; /* Centraliza a imagem */
-            background-attachment: fixed; /* A imagem fica fixa ao rolar a página */
+            background-attachment: scroll; /* A imagem fica fixa ao rolar a página */
             background-repeat: no-repeat; /* Evita que a imagem se repita */
             background-color: #f4f6f9; /* Cor de fundo de fallback se a imagem não carregar */
         }
@@ -47,8 +48,8 @@
     </nav>
 
     <!-- Container principal para o conteúdo -->
-    <div class="container-fluid py-4" style="height: 600px;">
-        <div class="row bg-here">
+    <div class="container-fluid py-4 bg-here">
+        <div class="row">
             <!-- Sidebar -->
             <aside class="col-md-3">
                 <div class="list-group">
