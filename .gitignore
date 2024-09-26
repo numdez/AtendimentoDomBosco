@@ -7,3 +7,4 @@ app/model/__pycache__
 app/log/__pycache__
 app/controller/__pycache__
 /__pycache__
+app/utils/__pycache__

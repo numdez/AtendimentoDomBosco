@@ -10,8 +10,10 @@ def to_df(data, tabela):
     if data:
         match tabela.lower():
             case 'usuario':
-                data = pd.DataFrame(data, 
-                    columns=['id_usuario', 'nome_usuario', 'email_usuario', 'senha_usuario', 'external_login', 'auth_secret', 'ult_data_login', 'tipo_usuario'])
+                data = pd.DataFrame(
+                    data, 
+                    columns=['id_usuario', 'nome_usuario', 'email_usuario', 'senha_usuario', 'external_login', 'auth_secret', 'ult_data_login', 'tipo_usuario']
+                )
     else:
         match tabela.lower():
             case 'usuario':

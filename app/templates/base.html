@@ -19,9 +19,6 @@
             width: auto;
             height: 6vh;
         }
-        .nav-item{
-            text-align: center;
-        }
     </style>
     {% block styles %}{% endblock %}
 </head>
@@ -38,8 +35,8 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <div class="d-flex">
-                        <span class="navbar-brand p-1 fs-6">{{current_user.name}}</span>
-                        <a class="btn btn-outline-light" href="{{ url_for('logout') }}">Sair</a>
+                        <span class="navbar-brand p-1 fs-6" style="margin: auto;">{{current_user.nome}}</span>
+                        <a class="btn btn-outline-dark" style="margin-left: 1vw;" href="{{ url_for('logout') }}">Sair</a>
                     </div>
                 </ul>
             </div>

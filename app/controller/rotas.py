@@ -1,5 +1,6 @@
 from app.model.ModelUser import ModelUser
 from app.controller.auth import Auth
+from app.utils import utils
 from app.model import functions
 from app.model.forms import LoginForm
 from app.model.entidades.Usuario import Usuario
@@ -71,8 +72,8 @@ def logout():
 @app.route("/home", methods=["GET", "POST"])
 def home():
     id_user = session["_user_id"]
-    usuario = functions.get_usuario(id_user)
-    return render_template('base.html', user=usuario)
+    usuario = utils.to_df(functions.get_usuario(id_user), 'usuario')
+    return render_template('base.html')
 
 
 
