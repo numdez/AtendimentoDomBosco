@@ -1,10 +1,47 @@
-from .entidades.user import User
+from .entidades.Usuario import Usuario
+import sqlite3
 
 
 class ModelUser():
     def __init__(self):
-        self._nome = 'pass'
+        self._nome = 'app.db'
+        self._conn = self._connecting()
 
+    def _connecting(self):
+        conn = sqlite3.connect(self._nome)
+        return conn
+
+
+    @classmethod
+    def login(self, db, user):
+        try:
+            cursor = db._conn.cursor()
+            sql = (
+                f"SELECT * FROM tbl_undb_usuarios WHERE email_usuario = '{user.email}'")
+            row = cursor.execute(sql).fetchone()
+            if row != None:
+                user = Usuario(row[0], row[2], Usuario.verify_password(
+                    row[3], user.senha), row[1], row[4], row[5])
+                return user
+            else:
+                return None
+        except Exception as ex:
+            raise Exception(ex)
+    
+    @classmethod
+    def get_by_id(self, db_loader, id):
+        cursor = db_loader._conn.cursor()
+        sql = (
+            f'SELECT * FROM tbl_undb_usuarios WHERE id_usuario={id}'
+        )
+        
+        row = cursor.execute(sql).fetchone()
+        if row != None:
+            logged_user = Usuario(row[0], row[2], row[3],
+                                row[1], row[4], row[5])
+            return logged_user
+        else:
+            return None
 
     @classmethod
     def call_get_query(self, db, query):

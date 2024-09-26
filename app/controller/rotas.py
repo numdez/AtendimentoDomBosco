@@ -1,7 +1,8 @@
 from app.model.ModelUser import ModelUser
 from app.controller.auth import Auth
+from app.model import functions
 from app.model.forms import LoginForm
-from app.model.entidades.user import User
+from app.model.entidades.Usuario import Usuario
 from app.log.logger import log_action
 
 from flask_login import logout_user, login_user, login_required, current_user
@@ -17,8 +18,10 @@ from app import app, lm
 def load_user(id):
     db_loader = ModelUser()
     lm.session_protection = "strong"
-    return ModelUser.get_by_id(db_loader, id)
-'''
+    data = ModelUser.get_by_id(db_loader, id)
+    return data
+
+
 # ROUTE
 # Login
 @app.route("/", methods=["GET", "POST"])
@@ -34,15 +37,13 @@ def index():
     if form.validate_on_submit():
         if next_url:
             return redirect(next_url)
-        user = User(0, form.email.data, form.password.data)
-        
+        user = Usuario(0, form.email.data, form.senha.data)
         logged_user = ModelUser.login(db, user)
         db._conn.close()
         if logged_user != None:
-            if logged_user.pwd:
-                login_user(logged_user, duration=timedelta(
-                    minutes=120), remember=False)
-                log_action(logged_user.name, 'LOGIN')
+            if logged_user.senha:
+                login_user(logged_user, remember=False)
+                log_action(logged_user.nome, 'LOGIN')
                 next = request.args.get('next')
                 session['ultAbaAberta'] = 'home'
                 return redirect(url_for("home"))
@@ -55,21 +56,26 @@ def index():
         print(form.errors)
     return render_template('login.html', form=form)
 
+# Logout
+@app.route("/logout")
+@login_required
+def logout():
+    user = functions.get_usuario(current_user.id)
+    logout_user()
+    log_action(user[0][1], 'LOGOUT')
+    session.clear()
+    resp = make_response(redirect(url_for("index")))
+    return resp
+
 
 @app.route("/home", methods=["GET", "POST"])
 def home():
-    return render_template()
-
-'''
-
-@app.route('/login')
-def login():
-    return render_template('login.html')
+    id_user = session["_user_id"]
+    usuario = functions.get_usuario(id_user)
+    return render_template('base.html', user=usuario)
 
 
-@app.route('/')
-def index():
-    return render_template('base.html')
+
 
 @app.route('/teste')
 def teste():
@@ -102,6 +108,11 @@ def status_403(error):
 
 def status_500(error):
     return "<h1>Sistema em Manutenção</h1>", 500
+
+@app.errorhandler(500)
+def erro_interno(error):
+    print('deu erro interno:', error)
+    #return redirect(url_for('home'))
 
 @app.errorhandler(401)
 def page_not_auto(error):

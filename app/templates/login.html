@@ -38,17 +38,59 @@
     </nav>
 
     <!-- Container principal para o conteúdo -->
-    <div class="container-fluid py-4 bg-here">
+    <div class="container-fluid py-4 not-bg-here">
         <div class="row">
             <!-- Conteúdo principal -->
             <main class="col-md-5">
                 <div class="card">
-                    <div class="card-header">
-                        Título do Conteúdo
-                    </div>
-                    <div class="card-body">
-                        <p>Este é o conteúdo principal da página.</p>
-                    </div>
+                    <form class="col-md-6 offset-md-3" action="" method="POST">
+                        {{form.csrf_token}}
+                        <h1 class="h3 mb-3 fw-normal text-center">Login</h1>
+                  
+                        <div class="form-group">
+                          <label for="floatingInput">Email</label>{{form.email(class="form-control", type="email",id="floatingInput")}}
+                          {% if form.errors.email %}
+                          <div class="alert alert-danger d-flex align-items-center" role="alert">
+                            <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:">
+                              <use xlink:href="#exclamation-triangle-fill" />
+                            </svg>
+                            <div>
+                              <ul>
+                                {% for e in form.errors.email %}
+                                <li>
+                                  {{e}}
+                                </li>
+                                {% endfor %}
+                              </ul>
+                            </div>
+                            {% endif %}
+                          </div>
+                          <div class="form-group">
+                            <label
+                              for="floatingPassword">Senha</label>{{form.senha(class="form-control",type="password",id="floatingPassword")}}
+                            {% if form.errors.senha %}
+                            <div class="alert alert-danger d-flex align-items-center" role="alert">
+                              <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:">
+                                <use xlink:href="#exclamation-triangle-fill" />
+                              </svg>
+                              <div>
+                                <ul>
+                                  {% for e in form.errors.senha %}
+                                  <li>
+                                    {{e}}
+                                  </li>
+                                  {% endfor %}
+                                </ul>
+                              </div>
+                              {% endif %}
+                  
+                            </div>
+                            <div class="form-check mb-3 mt-1">
+                              {{form.lembrar(type="checkbox",class="form-check-input",id="save-info")}} Lembrar
+                            </div>
+                            <button class="w-100 btn btn-lg btn-dark" type="submit">Entrar</button>
+                            <p class="mt-5 mb-3 text-muted text-center">&copy; 2024–2028</p>
+                      </form>
                 </div>
             </main>
         </div>
