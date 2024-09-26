@@ -4,6 +4,11 @@ html, body{
     height: 100%;
 }
 
+#logo-here{
+    width: auto;
+    height: 6vh;
+}
+
 body {
     font-family: 'Roboto', sans-serif;
     /*background-color: #6e3469;*/
@@ -29,13 +34,6 @@ h1, h2, h3, h4, h5, h6 {
     margin-left: 15px;
 }
 
-.navbar .btn-logout {
-    background-color: #dc3545;
-    color: white !important;
-    padding: 5px 10px;
-    border-radius: 4px;
-}
-
 .navbar .btn-logout:hover {
     background-color: #c82333;
 }
@@ -56,7 +54,7 @@ h1, h2, h3, h4, h5, h6 {
 /* Cartão de conteúdo principal */
 .card {
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    
 }
 
 .card-header {
@@ -87,13 +85,13 @@ a:hover {
 }
 
 .btn-primary {
-    background-color: #007bff;
-    border-color: #007bff;
+    background-color: #724A9A;
+    color: white;
 }
 
 .btn-primary:hover {
-    background-color: #0056b3;
-    border-color: #0056b3;
+    background-color: #9574b5;
+    border-color: #625372;
 }
 
 .btn-secondary {
