@@ -19,6 +19,13 @@
             width: auto;
             height: 6vh;
         }
+        body {
+            background: linear-gradient(to top,  #ffffff, #724A9A);
+            height: 100%; /* Para que o gradiente preencha a tela */
+            /* 
+            background-color: #724A9A;
+            */
+        }
     </style>
     {% block styles %}{% endblock %}
 </head>
@@ -29,46 +36,73 @@
             <a class="navbar-brand" href="{{ url_for('index') }}">
                 <img id="logo-here">
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Alternar navegação">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <div class="d-flex">
                         <span class="navbar-brand p-1 fs-6" style="margin: auto;">{{current_user.nome}}</span>
                         <a class="btn btn-outline-dark" style="margin-left: 1vw;" href="{{ url_for('logout') }}">Sair</a>
                     </div>
                 </ul>
-            </div>
         </div>
     </nav>
 
-    <!-- Container principal para o conteúdo -->
-    <div class="container-fluid py-4" style="height: 600px;">
-        <div class="row bg-here">
-            <!-- Sidebar -->
-            <aside class="col-md-3">
-                <div class="list-group">
-                    <a href="{{ url_for('atendimentos') }}" class="list-group-item list-group-item-action">Atendimentos</a>
-                    <a href="{{ url_for('requisicoes') }}" class="list-group-item list-group-item-action">Requisições</a>
-                </div>
-            </aside>
-
-            <!-- Conteúdo principal -->
-            <main class="col-md-9">
-                {% block content %}
-                <div class="card">
-                    <div class="card-header">
-                        Título do Conteúdo
-                    </div>
-                    <div class="card-body">
-                        <p>Este é o conteúdo principal da página.</p>
-                    </div>
-                </div>
-                {% endblock %}
-            </main>
+    <div class="offcanvas offcanvas-start w-25" tabindex="-1" id="offcanvas" data-bs-keyboard="false" data-bs-backdrop="false">
+        <div class="offcanvas-header">
+            <h6 class="offcanvas-title d-none d-sm-block" id="offcanvas">Menu</h6>
+            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body px-0">
+            <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-start" id="menu">
+                <li class="nav-item">
+                    <a href="#" class="nav-link text-truncate">
+                        <i class="fs-5 bi-house"></i><span class="ms-1 d-none d-sm-inline">Home</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#submenu1" data-bs-toggle="collapse" class="nav-link text-truncate">
+                        <i class="fs-5 bi-speedometer2"></i><span class="ms-1 d-none d-sm-inline">Dashboard</span> </a>
+                </li>
+                <li>
+                    <a href="#" class="nav-link text-truncate">
+                        <i class="fs-5 bi-table"></i><span class="ms-1 d-none d-sm-inline">Orders</span></a>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="nav-link dropdown-toggle  text-truncate" id="dropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fs-5 bi-bootstrap"></i><span class="ms-1 d-none d-sm-inline">Bootstrap</span>
+                    </a>
+                    <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdown">
+                        <li><a class="dropdown-item" href="#">New project...</a></li>
+                        <li><a class="dropdown-item" href="#">Settings</a></li>
+                        <li><a class="dropdown-item" href="#">Profile</a></li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li><a class="dropdown-item" href="#">Sign out</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#" class="nav-link text-truncate">
+                        <i class="fs-5 bi-grid"></i><span class="ms-1 d-none d-sm-inline">Products</span></a>
+                </li>
+                <li>
+                    <a href="#" class="nav-link text-truncate">
+                        <i class="fs-5 bi-people"></i><span class="ms-1 d-none d-sm-inline">Customers</span> </a>
+                </li>
+            </ul>
         </div>
     </div>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col min-vh-100 py-3">
+                <!-- toggler -->
+                <button class="btn btn-light float-end" data-bs-toggle="offcanvas" data-bs-target="#offcanvas" role="button">
+                    <i class="bi bi-arrow-right-square-fill fs-3" data-bs-toggle="offcanvas" data-bs-target="#offcanvas"></i>
+                </button>
+                Content..
+            </div>
+        </div>
+    </div>
+    <!-- Container principal para o conteúdo -->
+    
 
     <!-- Footer -->
     <footer class="bg-light text-center py-3">
