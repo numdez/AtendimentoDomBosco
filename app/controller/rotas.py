@@ -46,6 +46,7 @@ def index():
                 login_user(logged_user, remember=False)
                 log_action(logged_user.nome, 'LOGIN')
                 next = request.args.get('next')
+                print(next)
                 session['ultAbaAberta'] = 'home'
                 return redirect(url_for("home"))
             else:
@@ -72,7 +73,7 @@ def logout():
 @app.route("/home", methods=["GET", "POST"])
 def home():
     id_user = session["_user_id"]
-    print(current_user)
+    current_user.mostra_valores()
     functions.loga_usuario(id_user)
     session['ultAbaAberta'] = 'home'
     usuario = utils.to_df(functions.get_usuario(id_user), 'usuario')

@@ -96,7 +96,7 @@
                                 data-bs-toggle="pill" data-bs-target="#v-pills-vic" type="button" role="tab" onclick="setCookie('vic')"
                                 aria-controls="v-pills-vic" aria-selected="false" title="Matriz VIC"><i class="bi bi-bar-chart"></i>
                                 <span class="nav-text">Matriz VIC</span></button>    
-                            {% if current_user.tipo == 'Administrador' %}
+                            {% if current_user.tipo_usuario == 'Administrador' %}
                             <button class="nav-link text-start text-start text-dark fw-bold nav-button" id="v-pills-adm-tab colorButton"
                                 data-bs-toggle="pill" data-bs-target="#v-pills-adm" type="button" role="tab" onclick="setCookie('admin')"
                                 aria-controls="v-pills-adm" aria-selected="false" title="Administrador"><i class="bi bi-person-lock"></i>

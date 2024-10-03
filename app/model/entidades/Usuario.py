@@ -10,6 +10,13 @@ class Usuario(UserMixin):
         self.tipo = tipo
         self.ultimo_login = ult_data
         
+    def mostra_valores(self):
+        print(f'id: {self.id}')
+        print(f'email: {self.email}')
+        print(f'senha: {self.senha}')
+        print(f'nome: {self.nome}')
+        print(f'tipo: {self.tipo}')
+        print(f'ultimo login: {self.ultimo_login}')
 
     @classmethod
     def verify_password(self,hashed_password, senha):

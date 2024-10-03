@@ -21,7 +21,8 @@ class ModelUser():
             row = cursor.execute(sql).fetchone()
             if row != None:
                 user = Usuario(row[0], row[2], Usuario.verify_password(
-                    row[3], user.senha), row[1], row[4], row[5])
+                    row[3], user.senha), row[1], row[7], row[6])
+                user.mostra_valores()
                 return user
             else:
                 return None
