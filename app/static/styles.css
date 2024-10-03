@@ -1,169 +1,219 @@
-/* Estilos Globais */
-html, body{
-    width: 100%;
-    height: 100%;
-}
-
-#logo-here{
-    width: auto;
-    height: 6vh;
-}
-
-.center-container{
-    display:flex;
-    align-items:center;
-}
-
 body {
-    font-family: 'Roboto', sans-serif;
-    /*background-color: #6e3469;*/
-    color: #000000; 
-    
-}
-
-
-h1, h2, h3, h4, h5, h6 {
-    font-weight: 500;
-}
-
-.navbar {
-    width:100%;
-}
-
-.navbar-brand {
-    font-weight: bold;
-    font-size: 1.5rem;
-}
-
-.nav-link {
-    margin-left: 15px;
-}
-
-.navbar .btn-logout:hover {
-    background-color: #c82333;
-}
-
-/* Sidebar (Menu lateral) */
-.list-group-item {
-    font-weight: 500;
-    color: #343a40;
-    background-color: #ffffff;
-    border: 1px solid #ddd;
-}
-
-.list-group-item:hover {
-    background-color: #f8f9fa;
-    color: #007bff;
-}
-
-/* Cartão de conteúdo principal */
-.card {
-    border-radius: 8px;
-    
-}
-
-.card-header {
-    background-color: #007bff;
-    color: white;
-    font-weight: 500;
-}
-
-.card-body {
-    background-color: #ffffff;
-}
-
-/* Links no conteúdo */
-a {
-    color: #007bff;
-    text-decoration: none;
-}
-
-a:hover {
-    text-decoration: underline;
-}
-
-/* Botões */
-.btn {
-    padding: 10px 20px;
-    border-radius: 4px;
-    font-size: 1rem;
-}
-
-.btn-primary {
-    background-color: #724A9A;
-    color: white;
-}
-
-.btn-primary:hover {
-    background-color: #9574b5;
-    border-color: #625372;
-}
-
-.btn-secondary {
-    background-color: #6c757d;
-    border-color: #6c757d;
-}
-
-.btn-secondary:hover {
-    background-color: #5a6268;
-    border-color: #545b62;
-}
-
-/* Estilos para o rodapé */
-footer {
-    background-color: #f8f9fa;
-    padding: 20px 0;
-    border-top: 1px solid #ddd;
-}
-
-footer p {
     margin: 0;
-    color: #6c757d;
 }
 
-footer .footer-links a {
-    margin-right: 15px;
-    color: #343a40;
+.d-flex {
+    display: flex;
 }
 
-footer .footer-links a:hover {
-    color: #007bff;
-    text-decoration: underline;
+.nav-pills .nav-link.active {
+    background-color: black;
+    color: white !important;
 }
 
-/* Títulos customizados */
-h1 {
-    font-size: 2rem;
-    color: #007bff;
-    margin-bottom: 20px;
+footer {
+    position: fixed;
+    height: 2.5rem;
+    width: 100%;
+    bottom: 0;
+    z-index: 1050;
+    background-color: #212529 !important
 }
 
-h5 {
-    font-size: 1.25rem;
-    color: #343a40;
+.position-relative {
+    position: relative
 }
 
-/* Margens de seções */
-.section {
-    margin-bottom: 30px;
+.table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
 }
 
-/* Estilos responsivos */
-@media (max-width: 768px) {
-    .navbar-brand {
-        font-size: 1.25rem;
-    }
+.row>* {
+    flex-shrink: 1;
+}
 
-    .navbar-nav .nav-link {
-        margin-left: 0;
-        padding-left: 10px;
-    }
+tr:nth-child(even) {
+    background-color: #dddddd;
+}
 
-    .card {
-        margin-bottom: 20px;
-    }
+.reg-td {
+    border: 1px solid #dddddd;
+    text-align: left;
+    vertical-align: middle;
+    width: 20vw;
+    padding: 8px;
+    position: relative;
+    max-width: 20vw;
+    line-height: 4vh;
+    overflow: hidden;
+    white-space: nowrap;
+}
 
-    footer {
-        text-align: center;
-    }
+.reg-th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    vertical-align: top;
+    width: 25vw;
+    padding: 8px;
+    position: relative;
+
+}
+
+.last-th,
+.last-td {
+    border: 1px solid #dddddd;
+    text-align: center;
+    padding: 8px;
+    width: 10vw !important;
+    vertical-align: middle;
+}
+
+.id-td,
+.id-th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+    width: 15vw !important;
+    vertical-align: top;
+}
+
+.btn-icon {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    margin-right: 0;
+    float: right;
+}
+
+.btn-icon i {
+    font-size: 1rem;
+    color: white;
+}
+
+.form-control {
+    display: inline-block;
+    padding: .275rem .275rem;
+}
+
+.search-bar {
+    display: none;
+}
+
+.header-container {
+    display: flex;
+    align-items: center;
+}
+
+.header-container input {
+    margin-left: 5px;
+}
+
+.header-container button {
+    margin-left: 5px;
+}
+
+.th-input {
+    width: 100%;
+    height: auto;
+    box-sizing: border-box;
+}
+
+
+.sidebar {
+    width: 250px;
+    /* Largura inicial da navbar */
+    height: 100vh;
+    transition: width 0.3s;
+    /* Transição suave para largura */
+    position: fixed;
+    overflow: hidden;
+    z-index: 1000;
+}
+
+.sidebar .nav-link {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+}
+
+.sidebar .nav-link i {
+    font-size: 20px;
+    /* Tamanho dos ícones */
+    margin-right: 8px;
+}
+
+.sidebar .toggle-btn {
+    margin: 2px;
+}
+
+.sidebar.collapsed {
+    width: 60px;
+    /* Largura da navbar com ícones */
+}
+
+.sidebar.collapsed .nav-text {
+    display: none;
+    /* Esconde o texto quando colapsado */
+}
+
+.sidebar.collapsed .nav-link i {
+    display: block;
+    /* Exibe ícones quando colapsado */
+}
+
+main {
+    padding: 3px;
+    flex-grow: 1;
+    margin-left: 250px;
+    /* Margem inicial para o conteúdo principal, para evitar sobreposição */
+    padding: 20px;
+    /* Espaço ao redor do conteúdo principal */
+    transition: margin-left 0.3s;
+    /* Transição suave para ajuste da margem */
+}
+
+.sidebar.collapsed+main {
+    margin-left: 60px;
+    /* Ajusta a margem quando a navbar está colapsada */
+}
+
+.sidebar.collapsed .nav-button.active::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    /* Largura da listra */
+    height: 100%;
+    /* A listra deve ter a altura do botão */
+    background-color: #000000;
+    /* Cor da listra */
+    z-index: 1;
+    transition: background-color 0.3s;
+}
+
+.sidebar.collapsed .nav-pills .nav-link.active {
+    background-color: #ffffff;
+    /* Cor de fundo quando clicado */
+}
+
+.sidebar.collapsed .nav-button {
+    position: relative;
+    font-size: 16px;
+    border: none;
+    background-color: #ffffff;
+    color: black !important;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+}
+
+.container-fluid {
+    --bs-gutter-x: 0.5rem;
+    overflow: hidden;
+}
+#graph-container{
+    margin-left:50vw;
 }

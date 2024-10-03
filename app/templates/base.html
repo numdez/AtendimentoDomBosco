@@ -4,7 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script>
+        function toggleNavbar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('collapsed');
+        }
+        document.addEventListener('DOMContentLoaded', () => {
+            const button = document.getElementById('colorButton');
+
+            button.addEventListener('active', () => {
+                // Alterna a classe 'clicked' no botão
+                button.classList.toggle('active');
+            });
+        });
+    </script>
     <title>{% block title %}Sistema de Atendimento{% endblock %}</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" 
@@ -23,39 +39,73 @@
     {% block styles %}{% endblock %}
 </head>
 <body onload="carregaLogo()">
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-brand bg-light">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="{{ url_for('index') }}">
-                <img id="logo-here">
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Alternar navegação">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <div class="d-flex">
-                        <span class="navbar-brand p-1 fs-6" style="margin: auto;">{{current_user.nome}}</span>
-                        <a class="btn btn-outline-dark" style="margin-left: 1vw;" href="{{ url_for('logout') }}">Sair</a>
-                    </div>
-                </ul>
-            </div>
-        </div>
-    </nav>
+    <body class="bg-light">
 
-    <!-- Container principal para o conteúdo -->
-    <div class="container-fluid py-4" style="height: 600px;">
-        <div class="row bg-here">
-            <!-- Sidebar -->
-            <aside class="col-md-3">
-                <div class="list-group">
-                    <a href="{{ url_for('atendimentos') }}" class="list-group-item list-group-item-action">Atendimentos</a>
-                    <a href="{{ url_for('requisicoes') }}" class="list-group-item list-group-item-action">Requisições</a>
+        <header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-2 shadow">
+            <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="{{ url_for('home') }}"><img
+                    style="height: auto; max-width: 40%;"
+                    id="logo-here"
+                    alt="Main pi logo cmyk blue 140px"></a>
+            <div class="navbar-nav">
+    
+                <div class="d-flex">
+                    <span class="navbar-brand p-1 fs-6">{{current_user.nome}}</span>
+                    <a class="btn btn-outline-light" href="{{ url_for('logout') }}">Sair</a>
                 </div>
-            </aside>
-
-            <!-- Conteúdo principal -->
-            <main class="col-md-9">
+            </div>
+        </header>
+    
+        <div class="container-fluid">
+            <div class="d-flex row">
+                <nav id="sidebar" class="sidebar border-end collapsed"
+                    style="border-right: 1px solid #333; background-color: white;">
+                    <div class="position-sticky pt-3">
+                        <div class="nav flex-column nav-pills ali" id="v-pills-tab" role="tablist" style="height: 850px;"
+                            aria-orientation="vertical">
+                            <button class="nav-link text-start text-dark fw-bold toggle-btn" onclick="toggleNavbar()"><i
+                                    class="bi bi-justify"></i></button>
+                            <button class="nav-link active text-start text-dark fw-bold nav-button"
+                                id="v-pills-home-tab colorButton" data-bs-toggle="pill" data-bs-target="#v-pills-home"
+                                type="button" role="tab" onclick="setCookie('home')" aria-controls="v-pills-home" aria-selected="true" title="Home"><i
+                                    class="bi bi-house"></i> <span class="nav-text">Home</span></button>
+                            <button class="nav-link text-start text-start text-dark fw-bold nav-button" id="v-pills-contas-tab colorButton"
+                                data-bs-toggle="pill" data-bs-target="#v-pills-contas" type="button" role="tab"
+                                aria-controls="v-pills-contas" onclick="setCookie('account')" aria-selected="false" title="Contas"><i class="bi bi-person"></i><span
+                                    class="nav-text">Contas</span></button>
+                            <button class="nav-link text-start text-start text-dark fw-bold nav-button" id="v-pills-due-tab colorButton"
+                                data-bs-toggle="pill" data-bs-target="#v-pills-due" type="button" role="tab"
+                                aria-controls="v-pills-due" onclick="setCookie('dd')" aria-selected="false" title="Due Dilligence"><i class="bi bi-pass"></i>
+                                <span class="nav-text">Due Dilligence</span></button>
+                            <button class="nav-link text-start text-dark fw-bold nav-button" id="v-pills-go-tab colorButton" data-bs-toggle="pill"
+                                data-bs-target="#v-pills-go" type="button" role="tab" aria-controls="v-pills-go" onclick="setCookie('mapeamento')"
+                                aria-selected="true" title="Go / No Go - Mapeamento de Oportunidades"><i class="bi bi-file-text"></i> <span class="nav-text">GO / NO GO
+                                    Oportunidades</span></button>
+                            <button class="nav-link text-start text-start text-dark fw-bold nav-button" id="v-pills-opt-tab colorButton"
+                                data-bs-toggle="pill" data-bs-target="#v-pills-opt" type="button" role="tab" onclick="setCookie('oport')"
+                                aria-controls="v-pills-opt" aria-selected="false" title="Oportunidades"><i class="bi bi-list-task"></i>
+                                <span class="nav-text">Oportunidades</span></button>
+                            <button class="nav-link text-start text-start text-dark fw-bold nav-button" id="v-pills-pipeline-tab colorButton"
+                                data-bs-toggle="pill" data-bs-target="#v-pills-pipeline" type="button" role="tab" onclick="setCookie('pipeline')"
+                                aria-controls="v-pills-pipeline" aria-selected="false" title="Pipeline"><i class="bi bi-file-bar-graph"></i>
+                                <span class="nav-text">Pipeline</span></button>
+                            <button class="nav-link text-start text-start text-dark fw-bold nav-button" id="v-pills-relatorio-tab colorButton"
+                                data-bs-toggle="pill" data-bs-target="#v-pills-relatorio" type="button" role="tab" onclick="setCookie('relatorios')"
+                                aria-controls="v-pills-relatorio" aria-selected="false" title="Relatórios"><i class="bi bi-graph-up"></i>
+                                <span class="nav-text">Relatórios</span></button>
+                            <button class="nav-link text-start text-start text-dark fw-bold nav-button" id="v-pills-vic-tab colorButton"
+                                data-bs-toggle="pill" data-bs-target="#v-pills-vic" type="button" role="tab" onclick="setCookie('vic')"
+                                aria-controls="v-pills-vic" aria-selected="false" title="Matriz VIC"><i class="bi bi-bar-chart"></i>
+                                <span class="nav-text">Matriz VIC</span></button>    
+                            {% if current_user.tipo == 'Administrador' %}
+                            <button class="nav-link text-start text-start text-dark fw-bold nav-button" id="v-pills-adm-tab colorButton"
+                                data-bs-toggle="pill" data-bs-target="#v-pills-adm" type="button" role="tab" onclick="setCookie('admin')"
+                                aria-controls="v-pills-adm" aria-selected="false" title="Administrador"><i class="bi bi-person-lock"></i>
+                                <span class="nav-text">Administrador</span></button>
+                            {% endif %}
+                        </div>
+                    </div>
+                </nav>
+            <main class="col-md-12">
                 {% block content %}
                 <div class="card">
                     <div class="card-header">
@@ -71,21 +121,30 @@
     </div>
 
     <!-- Footer -->
-    <footer class="bg-light text-center py-3">
-        <p>&copy; 2024 Sistema de Atendimento. Todos os direitos reservados.</p>
-        <div class="footer-links">
-            <a href="#">Termos de Serviço</a>
-            <a href="#">Política de Privacidade</a>
+    {% block footer %}
+    <footer class="footer">
+        <div class="text-center text-light p-2" style="background-color: #563874;">
+            © Todos os direitos reservados
         </div>
     </footer>
+    {% endblock %}
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" 
-    integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+        integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" 
+        crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" 
-    integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous"></script>
+        integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" 
+        crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js" 
-    integrity="sha384-cuYeSxntonz0PPNlHhBs68uyIAVpIIOZZ5JqeqvYYIcEL727kskC66kF92t6Xl2V" crossorigin="anonymous"></script>
+        integrity="sha384-cuYeSxntonz0PPNlHhBs68uyIAVpIIOZZ5JqeqvYYIcEL727kskC66kF92t6Xl2V" 
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons@4.28.0/dist/feather.min.js"
+        integrity="sha384-uO3SXW5IuS1ZpFPKugNNWqTZRRglnUJK6UAZ/gxOX80nxEkN9NcGZTftn6RzhGWE"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"
+        integrity="sha384-zNy6FEbO50N+Cg5wap8IKA4M/ZnLJgzc6w2NqACZaK0u0FXfOWRRJOnQtpZun8ha"
+        crossorigin="anonymous"></script>
 
 
     <!-- Bloco para scripts específicos de cada página -->

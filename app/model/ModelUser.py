@@ -65,7 +65,6 @@ class ModelUser():
 
     @classmethod
     def call_set_query(self, db, query):
-        print(query)
         try:
             cursor = db._conn.cursor()
             cursor.execute(query)

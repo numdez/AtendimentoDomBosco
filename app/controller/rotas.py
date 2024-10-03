@@ -72,6 +72,7 @@ def logout():
 @app.route("/home", methods=["GET", "POST"])
 def home():
     id_user = session["_user_id"]
+    print(current_user)
     functions.loga_usuario(id_user)
     session['ultAbaAberta'] = 'home'
     usuario = utils.to_df(functions.get_usuario(id_user), 'usuario')
