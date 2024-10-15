@@ -1,0 +1,74 @@
+<!-- templates/signature.html -->
+{% extends "base.html" %}
+
+{% block title %}Assinatura Digital{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- Dentro de signature.html -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="container mt-3">
+        {% for category, message in messages %}
+        <div class="alert alert-{{ category }}" role="alert">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+
+    <h2>Assine ou faça upload da assinatura</h2>
+
+    <form action="/assinatura" method="POST" enctype="multipart/form-data">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <div class="mb-3">
+            <label for="assinaturaCanvas" class="form-label">Assine no quadro abaixo</label>
+            <canvas id="signatureCanvas" width="500" height="200" style="border: 1px solid black;"></canvas>
+            <input type="hidden" name="assinaturaCanvasData" id="assinaturaCanvasData">
+        </div>
+
+        <div class="mb-3">
+            <label for="assinaturaUpload" class="form-label">Ou faça upload de sua assinatura</label>
+            <input type="file" class="form-control" id="assinaturaUpload" name="assinaturaArquivo" accept="image/*">
+        </div>
+
+        <button type="submit" class="btn btn-success">Aplicar Assinatura</button>
+    </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const canvas = document.getElementById('signatureCanvas');
+    const ctx = canvas.getContext('2d');
+    let drawing = false;
+
+    canvas.addEventListener('mousedown', (e) => {
+        drawing = true;
+        ctx.moveTo(e.offsetX, e.offsetY);
+    });
+
+    canvas.addEventListener('mousemove', (e) => {
+        if (drawing) {
+            ctx.lineTo(e.offsetX, e.offsetY);
+            ctx.stroke();
+        }
+    });
+
+    canvas.addEventListener('mouseup', () => {
+        drawing = false;
+    });
+
+    // Salvar a assinatura desenhada em base64
+    const form = document.querySelector('form');
+    form.addEventListener('submit', () => {
+        const dataURL = canvas.toDataURL();
+        document.getElementById('assinaturaCanvasData').value = dataURL;
+    });
+
+    function clearCanvas() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+</script>
+{% endblock %}
