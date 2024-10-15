@@ -116,7 +116,12 @@
                             <div class="col-sm-6">
                                 <h4 class="mb-3">Assinatura do Responsável</h4>
                                 <img src="data:image/png;base64,{{ ass_responsavel}}" alt="Assinatura" style="width: 100%; height: auto;">
-                            </div>                    
+                            </div>
+                        {% else %}
+                            <div class="col-sm-6">
+                                <h4 class="mb-3">Assinatura do Responsável</h4>
+                                <img src="data:image/png;base64,{{ ass_responsavel}}" alt="Sem Assinatura" style="width: 100%; height: auto;">
+                            </div>     
                         {% endif %}
 
                         {% if ass_atendente %}
@@ -124,6 +129,11 @@
                                 <h4 class="mb-3">Assinatura do Atendente</h4>
                                 <img src="data:image/png;base64,{{ ass_atendente}}" alt="Assinatura" style="width: 100%; height: auto;">
                             </div>
+                            {% else %}
+                            <div class="col-sm-6">
+                                <h4 class="mb-3">Assinatura do Atendente</h4>
+                                <img src="data:image/png;base64,{{ ass_atendente}}" alt="Sem Assinatura" style="width: 100%; height: auto;">
+                            </div>   
                         {% endif %}
 
                         <div class="mb-6">

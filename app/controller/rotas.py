@@ -146,7 +146,6 @@ def add_chamado():
 @app.route('/chamado/view/<id_chamado>', methods=["GET", "POST"])
 def view_chamado(id_chamado):
     chamado = utils.to_df(functions.get_chamado(id_chamado), 'chamado')
-    print(chamado)
     log_action(current_user.nome, 'VIEW', 'CHAMADO', id_chamado)
     if chamado['assinatura_responsavel'][0] != None:
         ass_responsavel = utils.b64_to_bytes(chamado['assinatura_responsavel'][0])
