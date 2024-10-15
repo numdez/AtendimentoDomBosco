@@ -146,13 +146,15 @@ def add_chamado():
 @app.route('/chamado/view/<id_chamado>', methods=["GET", "POST"])
 def view_chamado(id_chamado):
     chamado = utils.to_df(functions.get_chamado(id_chamado), 'chamado')
+    chamado = utils.limpaDatas(chamado)
     log_action(current_user.nome, 'VIEW', 'CHAMADO', id_chamado)
-    if chamado['assinatura_responsavel'][0] != None:
+    print(type(chamado['assinatura_responsavel'][0]))
+    if isinstance(chamado['assinatura_responsavel'][0], str):
         ass_responsavel = utils.b64_to_bytes(chamado['assinatura_responsavel'][0])
         ass_responsavel = base64.b64encode(ass_responsavel).decode('utf-8')
     else:
         ass_responsavel = ''
-    if chamado['assinatura_atendente'][0] != None:
+    if isinstance(chamado['assinatura_atendente'][0], str):
         ass_atendente = utils.b64_to_bytes(chamado['assinatura_atendente'][0])
         ass_atendente = base64.b64encode(ass_atendente).decode('utf-8')
     else:

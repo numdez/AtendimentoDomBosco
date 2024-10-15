@@ -40,6 +40,20 @@ def to_df(data, tabela):
                 )
     return data
 
+def normalize_dates(df):
+    for col in df.columns:
+        if df[col].dtype == 'object': 
+            df[col] = pd.to_datetime(df[col], format="%Y-%m-%d", errors='ignore')
+    for col in df.columns:
+        if df[col].dtype == 'datetime64[ns]':
+            df[col] = df[col].dt.strftime('%d/%m/%Y')
+    return df
+
+# REMOVER DATAS VAZIAS
+def limpaDatas(df):
+    data = normalize_dates(df)
+    return data
+
 def bytes_to_img(b64String):
     imageBytes = base64.b64decode(b64String)
     image_stream = BytesIO(imageBytes)
