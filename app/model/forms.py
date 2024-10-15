@@ -24,9 +24,11 @@ class UpdateUsuarioForm(FlaskForm):
 
 class AddAtendimentoForm(FlaskForm):
     nome_aluno = StringField("Nome do Aluno", validators=[DataRequired()])
-    data_atendimento = DateField("Data Atendimento", validators=[DataRequired()])
+    #data_atendimento = DateField("Data Atendimento", validators=[DataRequired()])
     nascimento_aluno = DateField("Data de Nascimento", validators=[DataRequired()])
     serie_aluno = StringField("Ano/Série", validators=[DataRequired()])
+    turma_aluno = StringField("Turma")
+    nome_responsavel = StringField("Nome do Responsável", validators=[DataRequired()])
     parentesco_responsavel = StringField("Grau de Parentesco", validators=[DataRequired()])
     email_responsavel = EmailField("E-mail", validators=[DataRequired()])
     telefone_responsavel = StringField("Telefone", validators=[DataRequired()])

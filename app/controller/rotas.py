@@ -2,7 +2,7 @@ from app.model.ModelUser import ModelUser
 from app.controller.auth import Auth
 from app.utils import utils
 from app.model import functions
-from app.model.forms import LoginForm
+from app.model.forms import LoginForm, AddAtendimentoForm
 from app.model.entidades.Usuario import Usuario
 from app.log.logger import log_action
 
@@ -15,10 +15,12 @@ import base64
 from io import BytesIO
 from PIL import Image
 
+
+
 from flask_login import logout_user, login_user, login_required, current_user
 from flask import render_template, flash, redirect, url_for, request, abort, session, jsonify, send_file, make_response
 from werkzeug.utils import secure_filename
-from datetime import timedelta
+from datetime import timedelta, datetime
 from pandas import DataFrame
 from app import app, lm
 
@@ -52,11 +54,11 @@ def index():
         logged_user = ModelUser.login(db, user)
         db._conn.close()
         if logged_user != None:
+            logged_user.mostra_valores()
             if logged_user.senha:
                 login_user(logged_user, remember=False)
                 log_action(logged_user.nome, 'LOGIN')
                 next = request.args.get('next')
-                print(next)
                 session['ultAbaAberta'] = 'home'
                 return redirect(url_for("home"))
             else:
@@ -83,8 +85,9 @@ def logout():
 @app.route("/home", methods=["GET", "POST"])
 def home():
     id_user = session["_user_id"]
-    current_user.mostra_valores()
+    current_user.atualiza_login()
     functions.loga_usuario(id_user)
+    current_user.mostra_valores()
     session['ultAbaAberta'] = 'home'
     usuario = utils.to_df(functions.get_usuario(id_user), 'usuario')
     return render_template('base.html')
@@ -92,25 +95,19 @@ def home():
 
 @app.route('/formulario', methods=['GET', 'POST'])
 def formulario():
-    if request.method == 'POST':
-        # Dados do formulário original
-        nome = request.form['nome']
-        email = request.form['email']
-        assinaturaArquivo = request.files.get('assinaturaArquivo')
-
-        # Se o usuário fizer upload da assinatura eletrônica
-        if assinaturaArquivo and assinaturaArquivo.filename != '':
-            filename = assinaturaArquivo.filename
-            file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-            assinaturaArquivo.save(file_path)
-            flash('Upload de assinatura bem-sucedido!')
-        else:
-            file_path = None
-
+    current_user.mostra_valores()
+    form = AddAtendimentoForm()
+    if form.validate_on_submit():
+        args = (datetime.today().date(), form.nome_aluno.data, form.nascimento_aluno.data,
+                form.serie_aluno.data, form.turma_aluno.data, form.nome_responsavel.data,
+                form.parentesco_responsavel.data, form.email_responsavel.data, 
+                form.telefone_responsavel.data, form.celular_responsavel.data, form.solicitado_por.data,
+                form.questoes.data, form.aconselhamento.data, form.providencias.data, form.observacoes_finais.data
+            )
+        id = functions.set_new_atendimento(args)
         # Redireciona para a página de assinatura com os dados do formulário
-        return render_template('assinatura.html', nome=nome, email=email, assinatura=file_path)
-
-    return render_template('formulario.html')
+        return render_template('assinatura.html')
+    return render_template('formulario.html', form=form)
 
 @app.route('/assinatura', methods=['GET', 'POST'])
 def assinatura():

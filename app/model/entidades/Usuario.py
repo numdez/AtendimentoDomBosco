@@ -1,5 +1,6 @@
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
+from datetime import datetime
 
 class Usuario(UserMixin):
     def __init__(self,id,email,senha,nome="",tipo="", ult_data="") -> None:
@@ -17,6 +18,9 @@ class Usuario(UserMixin):
         print(f'nome: {self.nome}')
         print(f'tipo: {self.tipo}')
         print(f'ultimo login: {self.ultimo_login}')
+
+    def atualiza_login(self):
+        self.ultimo_login = datetime.today().date()
 
     @classmethod
     def verify_password(self,hashed_password, senha):

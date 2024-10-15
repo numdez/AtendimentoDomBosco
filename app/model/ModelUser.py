@@ -38,8 +38,7 @@ class ModelUser():
         
         row = cursor.execute(sql).fetchone()
         if row != None:
-            logged_user = Usuario(row[0], row[2], row[3],
-                                row[1], row[4], row[5])
+            logged_user = Usuario(row[0], row[2], row[3], row[1], row[7], row[6])
             return logged_user
         else:
             return None

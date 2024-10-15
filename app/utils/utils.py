@@ -12,12 +12,14 @@ def to_df(data, tabela):
             case 'usuario':
                 data = pd.DataFrame(
                     data, 
-                    columns=['id_usuario', 'nome_usuario', 'email_usuario', 'senha_usuario', 'external_login', 'auth_secret', 'ult_data_login', 'tipo_usuario']
+                    columns=['id_usuario', 'nome_usuario', 'email_usuario', 'senha_usuario', 'external_login', 
+                             'auth_secret', 'ult_data_login', 'tipo_usuario', 'assinatura']
                 )
     else:
         match tabela.lower():
             case 'usuario':
                 data = pd.DataFrame( 
-                    columns=['id_usuario', 'nome_usuario', 'email_usuario', 'senha_usuario', 'external_login', 'auth_secret', 'ult_data_login', 'tipo_usuario']
+                    columns=['id_usuario', 'nome_usuario', 'email_usuario', 'senha_usuario', 'external_login', 
+                             'auth_secret', 'ult_data_login', 'tipo_usuario', 'assinatura']
                 )
     return data

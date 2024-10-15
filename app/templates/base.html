@@ -35,6 +35,10 @@
             width: auto;
             height: 6vh;
         }
+
+        .bg-dark {
+            background-color: #563874 !important;
+        }
     </style>
     {% block styles %}{% endblock %}
 </head>
@@ -70,33 +74,17 @@
                                     class="bi bi-house"></i> <span class="nav-text">Home</span></button>
                             <button class="nav-link text-start text-start text-dark fw-bold nav-button" id="v-pills-contas-tab colorButton"
                                 data-bs-toggle="pill" data-bs-target="#v-pills-contas" type="button" role="tab"
-                                aria-controls="v-pills-contas" onclick="setCookie('account')" aria-selected="false" title="Contas"><i class="bi bi-person"></i><span
-                                    class="nav-text">Contas</span></button>
+                                aria-controls="v-pills-contas" onclick="setCookie('meusDados')" aria-selected="false" title="Contas"><i class="bi bi-person"></i><span
+                                    class="nav-text">Meus Dados</span></button>
                             <button class="nav-link text-start text-start text-dark fw-bold nav-button" id="v-pills-due-tab colorButton"
                                 data-bs-toggle="pill" data-bs-target="#v-pills-due" type="button" role="tab"
-                                aria-controls="v-pills-due" onclick="setCookie('dd')" aria-selected="false" title="Due Dilligence"><i class="bi bi-pass"></i>
-                                <span class="nav-text">Due Dilligence</span></button>
-                            <button class="nav-link text-start text-dark fw-bold nav-button" id="v-pills-go-tab colorButton" data-bs-toggle="pill"
-                                data-bs-target="#v-pills-go" type="button" role="tab" aria-controls="v-pills-go" onclick="setCookie('mapeamento')"
-                                aria-selected="true" title="Go / No Go - Mapeamento de Oportunidades"><i class="bi bi-file-text"></i> <span class="nav-text">GO / NO GO
-                                    Oportunidades</span></button>
+                                aria-controls="v-pills-due" onclick="setCookie('documentos')" aria-selected="false" title="Due Dilligence"><i class="bi bi-pass"></i>
+                                <span class="nav-text">Documentos</span></button>
                             <button class="nav-link text-start text-start text-dark fw-bold nav-button" id="v-pills-opt-tab colorButton"
-                                data-bs-toggle="pill" data-bs-target="#v-pills-opt" type="button" role="tab" onclick="setCookie('oport')"
+                                data-bs-toggle="pill" data-bs-target="#v-pills-opt" type="button" role="tab" onclick="setCookie('atendimentos')"
                                 aria-controls="v-pills-opt" aria-selected="false" title="Oportunidades"><i class="bi bi-list-task"></i>
-                                <span class="nav-text">Oportunidades</span></button>
-                            <button class="nav-link text-start text-start text-dark fw-bold nav-button" id="v-pills-pipeline-tab colorButton"
-                                data-bs-toggle="pill" data-bs-target="#v-pills-pipeline" type="button" role="tab" onclick="setCookie('pipeline')"
-                                aria-controls="v-pills-pipeline" aria-selected="false" title="Pipeline"><i class="bi bi-file-bar-graph"></i>
-                                <span class="nav-text">Pipeline</span></button>
-                            <button class="nav-link text-start text-start text-dark fw-bold nav-button" id="v-pills-relatorio-tab colorButton"
-                                data-bs-toggle="pill" data-bs-target="#v-pills-relatorio" type="button" role="tab" onclick="setCookie('relatorios')"
-                                aria-controls="v-pills-relatorio" aria-selected="false" title="Relatórios"><i class="bi bi-graph-up"></i>
-                                <span class="nav-text">Relatórios</span></button>
-                            <button class="nav-link text-start text-start text-dark fw-bold nav-button" id="v-pills-vic-tab colorButton"
-                                data-bs-toggle="pill" data-bs-target="#v-pills-vic" type="button" role="tab" onclick="setCookie('vic')"
-                                aria-controls="v-pills-vic" aria-selected="false" title="Matriz VIC"><i class="bi bi-bar-chart"></i>
-                                <span class="nav-text">Matriz VIC</span></button>    
-                            {% if current_user.tipo_usuario == 'Administrador' %}
+                                <span class="nav-text">Atendimentos</span></button>  
+                            {% if current_user.tipo == 'Administrador' %}
                             <button class="nav-link text-start text-start text-dark fw-bold nav-button" id="v-pills-adm-tab colorButton"
                                 data-bs-toggle="pill" data-bs-target="#v-pills-adm" type="button" role="tab" onclick="setCookie('admin')"
                                 aria-controls="v-pills-adm" aria-selected="false" title="Administrador"><i class="bi bi-person-lock"></i>
@@ -151,7 +139,7 @@
      <script>
         function carregaLogo(){
             imgObj = document.getElementById("logo-here");
-            imgObj.src = '/static/resources/db_logo.png';
+            imgObj.src = '/static/resources/db_logo_light.png';
         }
      </script>
     {% block scripts %}{% endblock %}

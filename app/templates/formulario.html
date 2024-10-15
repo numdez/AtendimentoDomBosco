@@ -3,22 +3,133 @@
 
 {% block title %}Formulário com Assinatura{% endblock %}
 
+<style>
+    .radio-group{
+        display: flex;
+    }
+    .radio-group .form-check {
+        margin-right: 15px;     /* Adiciona espaço entre as opções */
+    }
+</style>
+
 {% block content %}
-<div class="container">
-    <h2>Preencha o formulário</h2>
-    <form action="/assinatura" method="POST" enctype="multipart/form-data">
-        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-        <div class="mb-3">
-            <label for="nome" class="form-label">Nome</label>
-            <input type="text" class="form-control" id="nome" name="nome" required>
-        </div>
+<div class="container-fluid">
 
-        <div class="mb-3">
-            <label for="email" class="form-label">Email</label>
-            <input type="email" class="form-control" id="email" name="email" required>
-        </div>
+    <div class="pt-4 nav justify-content-end">
 
-        <button type="submit" class="btn btn-primary">Prosseguir para Assinatura</button>
-    </form>
+        <div class="d-flex">
+            <a class="btn btn-outline-dark m-2" href="{{ url_for('home') }}">Voltar</a>
+        </div>
+    </div>
+    <main class="form-signin w-75 m-auto">
+        <div class="row g-5">
+            <div class="col align-self-start">
+                <form class="needs-validation" novalidate method="POST" id="myForm" enctype="multipart/form-data">
+                    {{ form.csrf_token }}
+                    <div class="row g-3">
+                        <div class="row g-3">
+
+                            <h4 class="mb-3">1. Dados do Aluno</h4>
+
+                            <div class="col-sm-6">
+                                <label for="nomeAlu" class="form-label">Nome do Aluno<strong>*</strong></label>
+                                {{form.nome_aluno(class="form-control", type="text", id="nomeAlu")}}
+                            </div>
+
+                            <div class="col-sm-6">
+                                <label for="nascAlu" class="form-label">Data de Nascimento<strong>*</strong></label>
+                                {{form.nascimento_aluno(class="form-control", type="date", id="nascAlu")}}
+                            </div>
+
+                            <div class="col-sm-6">
+                                <label for="serieAlu" class="form-label">Ano/Série<strong>*</strong></label>
+                                {{form.serie_aluno(class="form-control", type="text", id="serieAlu")}}
+                            </div>
+
+                            <div class="col-sm-6">
+                                <label for="turmaAlu" class="form-label">Turma<strong>*</strong></label>
+                                {{form.turma_aluno(class="form-control", type="text", id="turmaAlu")}}
+                            </div>
+
+                            <h4 class="mb-3">2. Dados do Responsável</h4>
+
+                            <div class="col-sm-12">
+                                <label for="nomeResp" class="form-label">Nome do Responsável<strong>*</strong></label>
+                                {{form.nome_responsavel(class="form-control", type="text", id="nomeResp")}}
+                            </div>
+
+                            <div class="col-sm-6">
+                                <label for="parentescoResp" class="form-label">Grau de Parentesco<strong>*</strong></label>
+                                {{form.parentesco_responsavel(class="form-control", type="text", id="parentescoResp")}}
+                            </div>
+
+                            <div class="col-sm-6">
+                                <label for="emailResp" class="form-label">E-mail<strong>*</strong></label>
+                                {{form.email_responsavel(class="form-control", type="email", id="emailResp")}}
+                            </div>
+
+                            <div class="col-sm-6">
+                                <label for="telResp" class="form-label">Telefone<strong>*</strong></label>
+                                {{form.telefone_responsavel(class="form-control", type="text", id="telResp")}}
+                            </div>
+
+                            <div class="col-sm-6">
+                                <label for="celResp" class="form-label">Celular<strong>*</strong></label>
+                                {{form.celular_responsavel(class="form-control", type="text", id="celResp")}}
+                            </div>
+
+                            <div class="col-sm-12">
+                                <label for="soliPor" class="form-label">Solicitado Por<strong>*</strong></label>
+                                <div class="radio-group">
+                                    {% for subfield in form.solicitado_por %}
+                                        <div class="form-check">
+                                            {{ subfield(class="form-check-input") }}  <!-- Botão de rádio -->
+                                            {{ subfield.label(class="form-check-label") }}  <!-- Texto da opção -->
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+
+                            <h4 class="mb-3">3. Questões</h4>
+
+                            <div class="col-sm-12">
+                                <label for="questoes" class="form-label">Nome<strong>*</strong></label>
+                                {{form.questoes(class="form-control", type="text", id="questoes")}}
+                            </div>
+
+                            <h4 class="mb-3">4. Aconselhamento / Observações da Escola</h4>
+
+                            <div class="col-sm-12">
+                                <label for="aconselhamento" class="form-label">Nome<strong>*</strong></label>
+                                {{form.aconselhamento(class="form-control", type="text", id="aconselhamento")}}
+                            </div>
+
+                            <h4 class="mb-3">5. Providências</h4>
+
+                            <div class="col-sm-12">
+                                <label for="providencias" class="form-label">Nome<strong>*</strong></label>
+                                {{form.providencias(class="form-control", type="text", id="providencias")}}
+                            </div>
+
+                            <h4 class="mb-3">6. Observações Finais</h4>
+
+                            <div class="col-sm-12">
+                                <label for="obsFim" class="form-label">Nome<strong>*</strong></label>
+                                {{form.observacoes_finais(class="form-control", type="text", id="obsFim")}}
+                            </div>
+                            
+                            <div class="col-sm-2 mb-6">
+                                <button class="w-100 btn btn-dark btn-sm" type="submit">Salvar</button>
+                            </div>
+
+                            <div>
+                                <br>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
 </div>
 {% endblock %}
