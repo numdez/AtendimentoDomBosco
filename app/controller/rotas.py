@@ -54,7 +54,6 @@ def index():
         logged_user = ModelUser.login(db, user)
         db._conn.close()
         if logged_user != None:
-            logged_user.mostra_valores()
             if logged_user.senha:
                 login_user(logged_user, remember=False)
                 log_action(logged_user.nome, 'LOGIN')
@@ -87,60 +86,86 @@ def home():
     id_user = session["_user_id"]
     current_user.atualiza_login()
     functions.loga_usuario(id_user)
-    current_user.mostra_valores()
     session['ultAbaAberta'] = 'home'
     usuario = utils.to_df(functions.get_usuario(id_user), 'usuario')
     return render_template('base.html')
 
 
-@app.route('/formulario', methods=['GET', 'POST'])
-def formulario():
-    current_user.mostra_valores()
+@app.route('/chamado/add', methods=['GET', 'POST'])
+def add_chamado():
     form = AddAtendimentoForm()
+
     if form.validate_on_submit():
-        args = (datetime.today().date(), form.nome_aluno.data, form.nascimento_aluno.data,
-                form.serie_aluno.data, form.turma_aluno.data, form.nome_responsavel.data,
-                form.parentesco_responsavel.data, form.email_responsavel.data, 
-                form.telefone_responsavel.data, form.celular_responsavel.data, form.solicitado_por.data,
-                form.questoes.data, form.aconselhamento.data, form.providencias.data, form.observacoes_finais.data
-            )
-        id = functions.set_new_atendimento(args)
-        # Redireciona para a página de assinatura com os dados do formulário
-        return render_template('assinatura.html')
-    return render_template('formulario.html', form=form)
-
-@app.route('/assinatura', methods=['GET', 'POST'])
-def assinatura():
-    if request.method == 'POST':
-        # Verifique se foi desenhada uma assinatura
-        assinatura_canvas = request.form.get('assinaturaCanvasData')
-
-        # Verifique se um arquivo foi enviado
-        arquivo = request.files.get('assinaturaArquivo')
-
-        if assinatura_canvas:
-            # Processa a assinatura desenhada
-            # Aqui você pode salvar a imagem base64 ou processá-la
-            flash('Assinatura desenhada recebida com sucesso!', 'success')
-            return redirect(url_for('formulario'))  # Redireciona para a mesma página
-
-        elif arquivo:
-            # Salva o arquivo de assinatura enviado
-            filename = secure_filename(arquivo.filename)
-            arquivo.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            flash('Arquivo de assinatura enviado com sucesso!', 'success')
-            return redirect(url_for('assinatura'))  # Redireciona para a mesma página
-
+        assinatura_base64 = request.form['assinaturaCanvasData']
+        if assinatura_base64:
+            assinatura_base64 = assinatura_base64.split(",")[1]
+            assinatura_bytes = base64.b64decode(assinatura_base64)
+            assinatura_io = BytesIO(assinatura_bytes)
+            imagem_assinatura = Image.open(assinatura_io)
+            assinatura_string = base64.b64encode(assinatura_io.getvalue()).decode('utf-8')
         else:
-            flash('Nenhuma assinatura fornecida. Por favor, desenhe ou envie um arquivo.', 'warning')
-            return redirect(url_for('assinatura'))  # Redireciona para a mesma página
+            assinatura_string = ''
+        if assinatura_string:
+            if current_user.tipo == 'Usuário':
+                proc = f"""INSERT INTO tbl_undb_chamados(
+                    data_atendimento, nome_aluno, data_nasc_aluno, serie_aluno, turma_aluno, nome_responsavel, 
+                    parentesco_responsavel, email_responsavel, telefone_responsavel, celular_responsavel,
+                    solicitado_por, questoes, aconselhamento, providencias, observacoes_finais, assinatura_responsavel
+                ) VALUES """
+            elif current_user.tipo == 'Administrador' or current_user.tipo == 'Atendente':
+                proc = f"""INSERT INTO tbl_undb_chamados(
+                    data_atendimento, nome_aluno, data_nasc_aluno, serie_aluno, turma_aluno, nome_responsavel, 
+                    parentesco_responsavel, email_responsavel, telefone_responsavel, celular_responsavel,
+                    solicitado_por, questoes, aconselhamento, providencias, observacoes_finais, assinatura_atendente
+                ) VALUES """
+            args = (datetime.today().date(), form.nome_aluno.data, form.nascimento_aluno.data,
+                    form.serie_aluno.data, form.turma_aluno.data, form.nome_responsavel.data,
+                    form.parentesco_responsavel.data, form.email_responsavel.data, 
+                    form.telefone_responsavel.data, form.celular_responsavel.data, form.solicitado_por.data,
+                    form.questoes.data, form.aconselhamento.data, form.providencias.data, 
+                    form.observacoes_finais.data, assinatura_string
+                )
+        else:
+            proc = f"""INSERT INTO tbl_undb_chamados(
+                    data_atendimento, nome_aluno, data_nasc_aluno, serie_aluno, turma_aluno, nome_responsavel, 
+                    parentesco_responsavel, email_responsavel, telefone_responsavel, celular_responsavel,
+                    solicitado_por, questoes, aconselhamento, providencias, observacoes_finais
+                ) VALUES """
+            args = (datetime.today().date(), form.nome_aluno.data, form.nascimento_aluno.data,
+                    form.serie_aluno.data, form.turma_aluno.data, form.nome_responsavel.data,
+                    form.parentesco_responsavel.data, form.email_responsavel.data, 
+                    form.telefone_responsavel.data, form.celular_responsavel.data, form.solicitado_por.data,
+                    form.questoes.data, form.aconselhamento.data, form.providencias.data, 
+                    form.observacoes_finais.data
+                )
+        id = functions.run_blank_query(proc, args)
+        return redirect(url_for('home'))
+        #return redirect(url_for('view_atendimento', id_atendimento=id))
+    return render_template('chamados/add_chamado.html', form=form)
 
-    # Se for uma solicitação GET, apenas renderize a página
-    return render_template('assinatura.html')
+@app.route('/chamado/view/<id_chamado>', methods=["GET", "POST"])
+def view_chamado(id_chamado):
+    chamado = utils.to_df(functions.get_chamado(id_chamado), 'chamado')
+    print(chamado)
+    log_action(current_user.nome, 'VIEW', 'CHAMADO', id_chamado)
+    if chamado['assinatura_responsavel'][0] != None:
+        ass_responsavel = utils.b64_to_bytes(chamado['assinatura_responsavel'][0])
+        ass_responsavel = base64.b64encode(ass_responsavel).decode('utf-8')
+    else:
+        ass_responsavel = ''
+    if chamado['assinatura_atendente'][0] != None:
+        ass_atendente = utils.b64_to_bytes(chamado['assinatura_atendente'][0])
+        ass_atendente = base64.b64encode(ass_atendente).decode('utf-8')
+    else:
+        ass_atendente = ''
+    return render_template('chamados/view_chamado.html', chamado=chamado, ass_responsavel=ass_responsavel, ass_atendente=ass_atendente)
 
-@app.route('/teste')
-def teste():
-    return render_template('testeBase.html')
+@app.route('/teste/<id_chamado>')
+def teste(id_chamado):
+    imagem = utils.bytes_to_img(functions.run_blank_get(f'SELECT assinatura_atendente FROM tbl_undb_chamados WHERE id_chamado = {id_chamado}')[0][0])
+    image = Image.open(imagem)
+    image.show()
+    return redirect(url_for('home'))
 
 @app.route('/dashboard')
 def dashboard():

@@ -1,0 +1,190 @@
+<!-- templates/formulario.html -->
+{% extends "base.html" %}
+
+{% block title %}Formulário com Assinatura{% endblock %}
+
+<style>
+    .radio-group{
+        display: flex;
+    }
+    .radio-group .form-check {
+        margin-right: 15px;     /* Adiciona espaço entre as opções */
+    }
+
+    #signature-pad {
+        border: 1px solid #000; /* Adiciona uma borda ao canvas */
+        box-sizing: border-box; /* Inclui padding e borda na largura total */
+    }
+</style>
+
+{% block content %}
+<div class="container-fluid">
+
+    <div class="pt-4 nav justify-content-end">
+
+        <div class="d-flex">
+            <a class="btn btn-outline-dark m-2" href="{{ url_for('home') }}">Voltar</a>
+        </div>
+    </div>
+    <main class="form-signin w-75 m-auto">
+        <div class="row g-5">
+            <div class="col align-self-start">
+                <form class="needs-validation" novalidate>
+                    <div class="row g-3">
+
+                        <h4 class="mb-3">1. Dados do Aluno</h4>
+
+                        <div class="col-sm-6">
+                            <label for="nomeAlu" class="form-label">Nome do Aluno</label>
+                            <label class="form-control">{{ chamado['nome_aluno'][0] }}</label>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <label for="nascAlu" class="form-label">Data de Nascimento</label>
+                            <label class="form-control">{{ chamado['data_nasc_aluno'][0] }}</label>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <label for="serieAlu" class="form-label">Ano/Série</label>
+                            <label class="form-control">{{ chamado['serie_aluno'][0] }}</label>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <label for="turmaAlu" class="form-label">Turma</label>
+                            <label class="form-control">{{ chamado['turma_aluno'][0] }}</label>
+                        </div>
+
+                        <h4 class="mb-3">2. Dados do Responsável</h4>
+
+                        <div class="col-sm-12">
+                            <label for="nomeResp" class="form-label">Nome do Responsável</label>
+                            <label class="form-control">{{ chamado['nome_responsavel'][0] }}</label>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <label for="parentescoResp" class="form-label">Grau de Parentesco</label>
+                            <label class="form-control">{{ chamado['parentesco_responsavel'][0] }}</label>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <label for="emailResp" class="form-label">E-mail</label>
+                            <label class="form-control">{{ chamado['email_responsavel'][0] }}</label>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <label for="telResp" class="form-label">Telefone</label>
+                            <label class="form-control">{{ chamado['telefone_responsavel'][0] }}</label>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <label for="celResp" class="form-label">Celular</label>
+                            <label class="form-control">{{ chamado['celular_responsavel'][0] }}</label>
+                        </div>
+
+                        <div class="col-sm-12">
+                            <label for="soliPor" class="form-label">Solicitado Por</label>
+                            <label class="radio-group" aria-disabled="true">{{ chamado['data_nasc_aluno'][0] }}</label>
+                        </div>
+
+                        <h4 class="mb-3">3. Questões</h4>
+
+                        <div class="col-sm-12">
+                            <label class="form-control" disabled>{{ chamado['questoes'][0] }}</label>
+                        </div>
+
+                        <h4 class="mb-3">4. Aconselhamento / Observações da Escola</h4>
+
+                        <div class="col-sm-12">
+                            <label class="form-control" disabled>{{ chamado['aconselhamento'][0] }}</label>
+                        </div>
+
+                        <h4 class="mb-3">5. Providências</h4>
+
+                        <div class="col-sm-12">
+                            <label class="form-control" disabled>{{ chamado['providencias'][0] }}</label>
+                        </div>
+
+                        <h4 class="mb-3">6. Observações Finais</h4>
+
+                        <div class="col-sm-12">
+                            <label class="form-control" disabled>{{ chamado['observacoes_finais'][0] }}</label>
+                        </div>
+
+                        <h4 class="mb-3">7. Assinaturas</h4>
+
+                        {% if ass_responsavel %}
+                            <div class="col-sm-6">
+                                <h4 class="mb-3">Assinatura do Responsável</h4>
+                                <img src="data:image/png;base64,{{ ass_responsavel}}" alt="Assinatura" style="width: 100%; height: auto;">
+                            </div>                    
+                        {% endif %}
+
+                        {% if ass_atendente %}
+                            <div class="col-sm-6">
+                                <h4 class="mb-3">Assinatura do Atendente</h4>
+                                <img src="data:image/png;base64,{{ ass_atendente}}" alt="Assinatura" style="width: 100%; height: auto;">
+                            </div>
+                        {% endif %}
+
+                        <div class="mb-6">
+                            <br>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+</div>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var canvas = document.getElementById('signature-pad');
+        var ctx = canvas.getContext('2d');
+        var drawing = false;
+
+        function resizeCanvas() {
+            canvas.width = canvas.offsetWidth;
+            canvas.height = canvas.offsetHeight;
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas(); // Ajusta o canvas ao carregar a página
+
+        function getMousePosition(canvas, event) {
+            const rect = canvas.getBoundingClientRect();
+            return {
+                x: event.clientX - rect.left,
+                y: event.clientY - rect.top
+            };
+        }
+
+        canvas.addEventListener('mousedown', function (event) {
+            drawing = true;
+            const pos = getMousePosition(canvas, event);
+            ctx.beginPath();
+            ctx.moveTo(pos.x, pos.y);
+        });
+
+        canvas.addEventListener('mousemove', function (event) {
+            if (drawing) {
+                const pos = getMousePosition(canvas, event);
+                ctx.lineTo(pos.x, pos.y);
+                ctx.stroke();
+            }
+        });
+
+        canvas.addEventListener('mouseup', function () {
+            drawing = false;
+            ctx.closePath();
+        });
+
+        document.getElementById('myForm').addEventListener('submit', function () {
+            var dataURL = canvas.toDataURL('image/png');
+            document.getElementById('assinaturaCanvasData').value = dataURL;
+        });
+
+        document.getElementById('clearCanvas').addEventListener('click', function () {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        });
+    });
+</script>
+{% endblock %}

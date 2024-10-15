@@ -31,12 +31,17 @@ def get_chamados_usuario(id):
     data = ModelUser.call_get_query(db, proc)
     return data
 
-def set_new_atendimento(args):
+def run_blank_query(proc, args):
     db = ModelUser()
-    proc = f"""INSERT INTO tbl_undb_chamados(
-        data_atendimento, nome_aluno, data_nasc_aluno, serie_aluno, turma_aluno, nome_responsavel, 
-        parentesco_responsavel, email_responsavel, telefone_responsavel, celular_responsavel,
-        solicitado_por, questoes, aconselhamento, providencias, observacoes_finais
-    ) VALUES """ + args
-    data = ModelUser.call_bimethod_query(db, proc)
+    proc += '('
+    proc += f'"{args[0]}"'
+    for i in args[1:]:
+        proc += f',"{i}"' 
+    proc += ')'
+    data = ModelUser.call_set_query(db, proc)
+    return data
+
+def run_blank_get(proc):
+    db = ModelUser()
+    data = ModelUser.call_get_query(db, proc)
     return data
