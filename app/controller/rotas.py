@@ -125,7 +125,7 @@ def assinatura():
             # Processa a assinatura desenhada
             # Aqui você pode salvar a imagem base64 ou processá-la
             flash('Assinatura desenhada recebida com sucesso!', 'success')
-            return redirect(url_for('assinatura'))  # Redireciona para a mesma página
+            return redirect(url_for('formulario'))  # Redireciona para a mesma página
 
         elif arquivo:
             # Salva o arquivo de assinatura enviado
