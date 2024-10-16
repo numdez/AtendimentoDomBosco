@@ -179,16 +179,6 @@ def requisicoes():
 def requisitar():
     return render_template('requisitar.html')
 
-def save_signature(signature_data):
-    import base64
-    from io import BytesIO
-    from PIL import Image
-    # Extrair a imagem base64 (assume que a string tem o prefixo "data:image/png;base64,")
-    signature_data = signature_data.replace('data:image/png;base64,', '')
-    image_data = base64.b64decode(signature_data)
-    image = Image.open(BytesIO(image_data))
-    image.save(os.path.join(app.config['UPLOAD_FOLDER'], 'assinatura_desenhada.png'))
-
 # FUNCTIONS HTTP
 def status_404(error):
     return "<h1>Pagina não encontrada</h1>", 404
