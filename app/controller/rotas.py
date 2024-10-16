@@ -2,7 +2,7 @@ from app.model.ModelUser import ModelUser
 from app.controller.auth import Auth
 from app.utils import utils
 from app.model import functions
-from app.model.forms import LoginForm, AddAtendimentoForm
+from app.model.forms import LoginForm, AddAtendimentoForm, UpdateAtendimentoForm
 from app.model.entidades.Usuario import Usuario
 from app.log.logger import log_action
 
@@ -96,7 +96,6 @@ def add_chamado():
             assinatura_base64 = assinatura_base64.split(",")[1]
             assinatura_bytes = base64.b64decode(assinatura_base64)
             assinatura_io = BytesIO(assinatura_bytes)
-            imagem_assinatura = Image.open(assinatura_io)
             assinatura_string = base64.b64encode(assinatura_io.getvalue()).decode('utf-8')
         else:
             assinatura_string = ''
@@ -143,7 +142,6 @@ def view_chamado(id_chamado):
     chamado = utils.to_df(functions.get_chamado(id_chamado), 'chamado')
     chamado = utils.limpaDatas(chamado)
     log_action(current_user.nome, 'VIEW', 'CHAMADO', id_chamado)
-    print(type(chamado['assinatura_responsavel'][0]))
     if isinstance(chamado['assinatura_responsavel'][0], str):
         ass_responsavel = utils.b64_to_bytes(chamado['assinatura_responsavel'][0])
         ass_responsavel = base64.b64encode(ass_responsavel).decode('utf-8')
@@ -155,6 +153,77 @@ def view_chamado(id_chamado):
     else:
         ass_atendente = ''
     return render_template('chamados/view_chamado.html', chamado=chamado, ass_responsavel=ass_responsavel, ass_atendente=ass_atendente)
+
+@app.route('/chamado/edit/<id_chamado>', methods=["GET", "POST"])
+def edit_chamado(id_chamado):
+    chamado = utils.to_df(functions.get_chamado(id_chamado), 'chamado')
+    form = UpdateAtendimentoForm()
+    log_action(current_user.nome, 'EDIT', 'CHAMADO', id_chamado)
+
+    if request.method == 'GET':
+        if isinstance(chamado['assinatura_responsavel'][0], str):
+            ass_responsavel = utils.b64_to_bytes(chamado['assinatura_responsavel'][0])
+            ass_responsavel = base64.b64encode(ass_responsavel).decode('utf-8')
+        else:
+            ass_responsavel = ''
+        if isinstance(chamado['assinatura_atendente'][0], str):
+            ass_atendente = utils.b64_to_bytes(chamado['assinatura_atendente'][0])
+            ass_atendente = base64.b64encode(ass_atendente).decode('utf-8')
+        else:
+            ass_atendente = ''
+        form.questoes.data = chamado['questoes'][0]
+        form.aconselhamento.data = chamado['aconselhamento'][0]
+        form.providencias.data = chamado['providencias'][0]
+        form.observacoes_finais.data = chamado['observacoes_finais'][0]
+        ass_responsavel = chamado['assinatura_responsavel'][0] if chamado['assinatura_responsavel'][0] else 'Sem Assinatura'
+        ass_atendente = chamado['assinatura_atendente'][0] if chamado['assinatura_atendente'][0] else 'Sem Assinatura'
+
+    if form.validate_on_submit():
+        assinatura_base64 = request.form['assinaturaCanvasData']
+        if assinatura_base64:
+            assinatura_base64 = assinatura_base64.split(",")[1]
+            assinatura_bytes = base64.b64decode(assinatura_base64)
+            assinatura_io = BytesIO(assinatura_bytes)
+            assinatura_string = base64.b64encode(assinatura_io.getvalue()).decode('utf-8')
+        else:
+            assinatura_string = ''
+
+        nome_aluno = form.nome_aluno.data if form.nome_aluno.data != chamado['nome_aluno'][0] else chamado['nome_aluno'][0]
+        nascimento_aluno = form.nascimento_aluno.data if form.nascimento_aluno.data != chamado['data_nasc_aluno'][0] else chamado['data_nasc_aluno'][0]
+        serie_aluno = form.serie_aluno.data if form.serie_aluno.data != chamado['serie_aluno'][0] else chamado['serie_aluno'][0]
+        turma_aluno = form.turma_aluno.data if form.turma_aluno.data != chamado['turma_aluno'][0] else chamado['turma_aluno'][0]
+        nome_responsavel = form.nome_responsavel.data if form.nome_responsavel.data != chamado['nome_responsavel'][0] else chamado['nome_responsavel'][0]
+        parentesco_responsavel = form.parentesco_responsavel.data if form.parentesco_responsavel.data != chamado['parentesco_responsavel'][0] else chamado['parentesco_responsavel'][0]
+        email_responsavel = form.email_responsavel.data if form.email_responsavel.data != chamado['email_responsavel'][0] else chamado['email_responsavel'][0]
+        telefone_responsavel = form.telefone_responsavel.data if form.telefone_responsavel.data != chamado['telefone_responsavel'][0] else chamado['telefone_responsavel'][0]
+        celular_responsavel = form.celular_responsavel.data if form.celular_responsavel.data != chamado['celular_responsavel'][0] else chamado['celular_responsavel'][0]
+        solicitado_por = form.solicitado_por.data if form.solicitado_por.data != chamado['solicitado_por'][0] else chamado['solicitado_por'][0]
+        questoes = form.questoes.data if form.questoes.data != chamado['questoes'][0] else chamado['questoes'][0]
+        aconselhamento = form.aconselhamento.data if form.aconselhamento.data != chamado['aconselhamento'][0] else chamado['aconselhamento'][0]
+        providencias = form.providencias.data if form.providencias.data != chamado['providencias'][0] else chamado['providencias'][0]
+        observacoes_finais = form.observacoes_finais.data if form.observacoes_finais.data != chamado['observacoes_finais'][0] else chamado['observacoes_finais'][0]
+        if assinatura_string:
+            if current_user.nivel == 'Usuário':
+                ass_responsavel = assinatura_string
+                ass_atendente = chamado['assinatura_atendente'][0]            
+            else:
+                ass_responsavel = chamado['assinatura_responsavel'][0]
+                ass_atendente = assinatura_string
+            proc = f"""
+                UPDATE tbl_undb_chamados SET nome_aluno = '{nome_aluno}', data_nasc_aluno = '{nascimento_aluno}', 
+                serie_aluno = '{serie_aluno}', turma_aluno = '{turma_aluno}', nome_responsavel = '{nome_responsavel}',
+                parentesco_responsavel = '{parentesco_responsavel}', email_responsavel = '{email_responsavel}',
+                telefone_responsavel = '{telefone_responsavel}', celular_responsavel = '{celular_responsavel}',
+                solicitado_por = '{solicitado_por}', questoes = '{questoes}', aconselhamento = '{aconselhamento}',
+                providencias = '{providencias}', observacoes_finais = '{observacoes_finais}', 
+                assinatura_responsavel = '{ass_responsavel}', assinatura_atendente = '{ass_atendente}'
+                where id_chamado = {id_chamado}
+            """
+            functions.update_chamado(proc)
+            return redirect(url_for('view_chamado', id_chamado=id_chamado))
+    return render_template('/chamados/edit_chamado.html', chamado=chamado, form=form, ass_responsavel=ass_responsavel, ass_atendente=ass_atendente)
+
+
 
 @app.route('/teste/<id_chamado>')
 def teste(id_chamado):
