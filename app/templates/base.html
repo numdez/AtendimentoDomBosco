@@ -39,6 +39,52 @@
         .bg-dark {
             background-color: #563874 !important;
         }
+
+        main{
+            background-image: url("../static/resources/background.png");
+            background-position: center;
+            background-size: cover;
+        }
+        /* Cartões principais */
+        main .cards {
+            display: flex;
+            justify-content: center;
+            margin: 40px 0;
+            gap: 20px;
+        }
+
+        main .card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            width: 20vw;
+            margin-inline: 2vw;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        main .card img {
+            width: 30%;
+            margin-bottom: 30px;
+            margin-top: 20px;
+            margin-inline: auto;
+        }
+
+        main .card h2 {
+            color: #6d4ab3;
+            margin-bottom: 10px;
+        }
+
+        main .card p {
+            color: #666;
+        }
+
+        a.fill-div {
+            display: block;
+            height: 100%;
+            width: 100%;
+            text-decoration: none;
+        }
     </style>
     {% block styles %}{% endblock %}
 </head>
@@ -68,42 +114,58 @@
                             aria-orientation="vertical">
                             <button class="nav-link text-start text-dark fw-bold toggle-btn" onclick="toggleNavbar()"><i
                                     class="bi bi-justify"></i></button>
-                            <button class="nav-link active text-start text-dark fw-bold nav-button"
-                                id="v-pills-home-tab colorButton" data-bs-toggle="pill" data-bs-target="#v-pills-home"
-                                type="button" role="tab" onclick="setCookie('home')" aria-controls="v-pills-home" aria-selected="true" title="Home"><i
-                                    class="bi bi-house"></i> <span class="nav-text">Home</span></button>
-                            <button class="nav-link text-start text-start text-dark fw-bold nav-button" id="v-pills-contas-tab colorButton"
-                                data-bs-toggle="pill" data-bs-target="#v-pills-contas" type="button" role="tab"
-                                aria-controls="v-pills-contas" onclick="setCookie('meusDados')" aria-selected="false" title="Contas"><i class="bi bi-person"></i><span
-                                    class="nav-text">Meus Dados</span></button>
-                            <button class="nav-link text-start text-start text-dark fw-bold nav-button" id="v-pills-due-tab colorButton"
-                                data-bs-toggle="pill" data-bs-target="#v-pills-due" type="button" role="tab"
-                                aria-controls="v-pills-due" onclick="setCookie('documentos')" aria-selected="false" title="Due Dilligence"><i class="bi bi-pass"></i>
-                                <span class="nav-text">Documentos</span></button>
-                            <button class="nav-link text-start text-start text-dark fw-bold nav-button" id="v-pills-opt-tab colorButton"
-                                data-bs-toggle="pill" data-bs-target="#v-pills-opt" type="button" role="tab" onclick="setCookie('atendimentos')"
-                                aria-controls="v-pills-opt" aria-selected="false" title="Oportunidades"><i class="bi bi-list-task"></i>
-                                <span class="nav-text">Atendimentos</span></button>  
-                            {% if current_user.tipo == 'Administrador' %}
-                            <button class="nav-link text-start text-start text-dark fw-bold nav-button" id="v-pills-adm-tab colorButton"
-                                data-bs-toggle="pill" data-bs-target="#v-pills-adm" type="button" role="tab" onclick="setCookie('admin')"
-                                aria-controls="v-pills-adm" aria-selected="false" title="Administrador"><i class="bi bi-person-lock"></i>
-                                <span class="nav-text">Administrador</span></button>
-                            {% endif %}
+                            {% block navbar %}
+                                <button class="nav-link active text-start text-dark fw-bold nav-button"
+                                    id="v-pills-home-tab colorButton" data-bs-toggle="pill" data-bs-target="#v-pills-home"
+                                    type="button" role="tab" onclick="location.href='home';" aria-controls="v-pills-home" aria-selected="true" title="Home"><i
+                                        class="bi bi-house"></i> <span class="nav-text">Home</span></button>
+                                <button class="nav-link text-start text-start text-dark fw-bold nav-button" id="v-pills-contas-tab colorButton"
+                                    data-bs-toggle="pill" data-bs-target="#v-pills-contas" type="button" role="tab"
+                                    aria-controls="v-pills-contas" onclick="redireciona('meusDados')" aria-selected="false" title="Meus Dados"><i class="bi bi-person"></i><span
+                                        class="nav-text">Meus Dados</span></button>
+                                <button class="nav-link text-start text-start text-dark fw-bold nav-button" id="v-pills-due-tab colorButton"
+                                    data-bs-toggle="pill" data-bs-target="#v-pills-due" type="button" role="tab"
+                                    aria-controls="v-pills-due" onclick="redireciona('documentos')" aria-selected="false" title="Documentos"><i class="bi bi-pass"></i>
+                                    <span class="nav-text">Documentos</span></button>
+                                <button class="nav-link text-start text-start text-dark fw-bold nav-button" id="v-pills-opt-tab colorButton"
+                                    data-bs-toggle="pill" data-bs-target="#v-pills-opt" type="button" role="tab" onclick="redireciona('chamados')"
+                                    aria-controls="v-pills-opt" aria-selected="false" title="Chamados"><i class="bi bi-list-task"></i>
+                                    <span class="nav-text">Chamados</span></button>  
+                                {% if current_user.tipo == 'Administrador' %}
+                                <button class="nav-link text-start text-start text-dark fw-bold nav-button" id="v-pills-adm-tab colorButton"
+                                    data-bs-toggle="pill" data-bs-target="#v-pills-adm" type="button" role="tab" onclick="redireciona('admin')"
+                                    aria-controls="v-pills-adm" aria-selected="false" title="Administrador"><i class="bi bi-person-lock"></i>
+                                    <span class="nav-text">Administrador</span></button>
+                                {% endif %}
+                            {% endblock %}
                         </div>
                     </div>
                 </nav>
-            <main class="col-md-12">
-                {% block content %}
-                <div class="card">
-                    <div class="card-header">
-                        Título do Conteúdo
+            <main class="col-md-12" style="height: 90vh;">
+                <div class="tab-content" id="v-pills-tabContent">
+                    {% block content %}
+                    <div class="tab-pane fade show active" id="v-pills-home" role="tabpanel"
+                        aria-labelledby="v-pills-home-tab" tabindex="0">
+                        <section class="cards">
+                            <div class="card">
+                                <img src="../static/resources/aluno.png" alt="Icone Aluno">
+                                <h2>ALUNO</h2>
+                                <p>Atualize informações importantes do aluno, como endereço, contatos de emergência e dados médicos, de forma simples e rápida.</p>
+                            </div>
+                            <div class="card" onclick="location.href='view/chamados';" style="cursor: pointer;">
+                                <img src="../static/resources/atendimento.png" alt="Icone Atendimento">
+                                <h2>ATENDIMENTO</h2>
+                                <p>Conversar com um atendente para tirar dúvidas sobre o aluno(a), a escola e a metodologia.</p>
+                            </div>
+                            <div class="card">
+                                <img src="../static/resources/documentos.png" alt="Icone Documentos">
+                                <h2>DOCUMENTOS</h2>
+                                <p>Visualizar documentos que foram realizados, documentos pendentes e não finalizados.</p>
+                            </div>
+                        </section>
                     </div>
-                    <div class="card-body">
-                        <p>Este é o conteúdo principal da página.</p>
-                    </div>
+                    {% endblock %}
                 </div>
-                {% endblock %}
             </main>
         </div>
     </div>
@@ -137,6 +199,10 @@
 
     <!-- Bloco para scripts específicos de cada página -->
      <script>
+        function redireciona(rota){
+            console.log('chamou a função');
+        }
+
         function carregaLogo(){
             imgObj = document.getElementById("logo-here");
             imgObj.src = '/static/resources/db_logo_light.png';

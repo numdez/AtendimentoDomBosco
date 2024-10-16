@@ -17,13 +17,32 @@
     }
 </style>
 
+{% block navbar %}
+<button class="nav-link text-start text-dark fw-bold nav-button"
+    id="v-pills-home-tab colorButton" data-bs-toggle="pill" data-bs-target="#v-pills-home"
+    type="button" role="tab" onclick="location.href='home';" aria-controls="v-pills-home" aria-selected="false" title="Home"><i
+    class="bi bi-house"></i> <span class="nav-text">Home</span></button>
+<button class="nav-link text-start text-dark fw-bold nav-button" id="v-pills-contas-tab colorButton"
+    data-bs-toggle="pill" data-bs-target="#v-pills-meus-dados" type="button" role="tab"
+    aria-controls="v-pills-meus-dados" onclick="location.href='view/meus_dados';" aria-selected="false" title="Meus Dados"><i class="bi bi-person"></i><span
+        class="nav-text">Meus Dados</span></button>
+<button class="nav-link text-start text-dark fw-bold nav-button" id="v-pills-due-tab colorButton"
+    data-bs-toggle="pill" data-bs-target="#v-pills-due" type="button" role="tab"
+    aria-controls="v-pills-due" onclick="location.href='view/documentos';" aria-selected="false" title="Documentos"><i class="bi bi-pass"></i>
+    <span class="nav-text">Documentos</span></button>
+<button class="nav-link active text-start text-dark fw-bold nav-button" id="v-pills-opt-tab colorButton"
+    data-bs-toggle="pill" data-bs-target="#v-pills-opt" type="button" role="tab" onclick="location.href='view/chamados';"
+    aria-controls="v-pills-opt" aria-selected="true" title="Chamados"><i class="bi bi-list-task"></i>
+    <span class="nav-text">Chamados</span></button>  
+{% endblock %}
+
 {% block content %}
 <div class="container-fluid">
 
     <div class="pt-4 nav justify-content-end">
 
         <div class="d-flex">
-            <a class="btn btn-outline-dark m-2" href="{{ url_for('home') }}">Voltar</a>
+            <a class="btn btn-outline-dark m-2" href="{{ url_for('all_chamados') }}">Voltar</a>
         </div>
     </div>
     <main class="form-signin w-75 m-auto">

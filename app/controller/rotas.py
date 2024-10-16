@@ -148,7 +148,6 @@ def view_chamado(id_chamado):
     chamado = utils.to_df(functions.get_chamado(id_chamado), 'chamado')
     chamado = utils.limpaDatas(chamado)
     log_action(current_user.nome, 'VIEW', 'CHAMADO', id_chamado)
-    print(type(chamado['assinatura_responsavel'][0]))
     if isinstance(chamado['assinatura_responsavel'][0], str):
         ass_responsavel = utils.b64_to_bytes(chamado['assinatura_responsavel'][0])
         ass_responsavel = base64.b64encode(ass_responsavel).decode('utf-8')
@@ -160,6 +159,13 @@ def view_chamado(id_chamado):
     else:
         ass_atendente = ''
     return render_template('chamados/view_chamado.html', chamado=chamado, ass_responsavel=ass_responsavel, ass_atendente=ass_atendente)
+
+@app.route('/view/chamados', methods=["GET", "POST"])
+def all_chamados():
+    chamados = utils.to_df(functions.get_all_chamados(), 'chamado')
+    chamados = utils.limpaDatas(chamados)
+    return render_template('atendimentos.html', df_atendimentos=chamados)
+
 
 @app.route('/teste/<id_chamado>')
 def teste(id_chamado):
