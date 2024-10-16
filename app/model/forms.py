@@ -43,9 +43,19 @@ class AddAtendimentoForm(FlaskForm):
 
 
 class UpdateAtendimentoForm(FlaskForm):
-    usuario = StringField("Nome do usuário")
-    responsavel = StringField("Nome do responsável")
-    tipo = SelectField("Tipo de Atendimento")
-    situacao = SelectField("Situação do Atendimento")
-    data_conclusao = DateField("Data de conclusão")
-    retorno = StringField("Retorno para o usuário")
+    nome_aluno = StringField("Nome do Aluno")
+    #data_atendimento = DateField("Data Atendimento", validators=[DataRequired()])
+    nascimento_aluno = DateField("Data de Nascimento")
+    serie_aluno = StringField("Ano/Série")
+    turma_aluno = StringField("Turma")
+    nome_responsavel = StringField("Nome do Responsável")
+    parentesco_responsavel = StringField("Grau de Parentesco")
+    email_responsavel = EmailField("E-mail")
+    telefone_responsavel = StringField("Telefone")
+    celular_responsavel = StringField("Celular")
+    solicitado_por = RadioField("Solicitado Por", 
+            choices=[('Solicitação foi feita pelos responsáveis', 'Pelos Responsáveis'), ('Solicitação foi feita pela escola', 'Pela Escola')])
+    questoes = TextAreaField("Questões")
+    aconselhamento = TextAreaField("Aconselhamento / Observações da escola")
+    providencias = TextAreaField("Providências")
+    observacoes_finais = TextAreaField("Observações Finais")
