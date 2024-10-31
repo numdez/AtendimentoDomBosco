@@ -1,6 +1,6 @@
 from app.model.ModelUser import ModelUser
 from app.controller.auth import Auth
-from app.utils import utils
+from app.utils import utiles
 from app.model import functions
 from app.model.forms import LoginForm, AddAtendimentoForm, UpdateAtendimentoForm
 from app.model.entidades.Usuario import Usuario
@@ -10,7 +10,10 @@ import base64
 from io import BytesIO
 from PIL import Image
 
-
+import requests
+import os
+from google.oauth2 import id_token
+from google.auth.transport import requests as google_requests
 
 from flask_login import logout_user, login_user, login_required, current_user
 from flask import render_template, flash, redirect, url_for, request, abort, session, jsonify, send_file, make_response
@@ -18,6 +21,7 @@ from werkzeug.utils import secure_filename
 from datetime import timedelta, datetime
 from pandas import DataFrame
 from app import app, lm
+
 
 
 
@@ -43,26 +47,70 @@ def index():
         session['ultAbaAberta'] = 'home'
         return redirect(url_for('home'))
     if form.validate_on_submit():
-        if next_url:
-            return redirect(next_url)
         user = Usuario(0, form.email.data, form.senha.data)
         logged_user = ModelUser.login(db, user)
-        db._conn.close()
-        if logged_user != None:
-            if logged_user.senha:
-                login_user(logged_user, remember=False)
-                log_action(logged_user.nome, 'LOGIN')
-                next = request.args.get('next')
-                session['ultAbaAberta'] = 'home'
-                return redirect(url_for("home"))
-            else:
-                flash("Senha incorreta. Verifique e tente novamente.")
-
-        else:
-            flash("Usuário não encontrado.")
+        if logged_user and logged_user.senha:
+            login_user(logged_user, remember=False)
+            log_action(logged_user.nome, 'LOGIN')
+            return redirect(next_url or url_for('home'))
+        flash("Usuário ou senha incorretos.")
     else:
         print(form.errors)
     return render_template('login.html', form=form)
+
+# Login com OAuth
+@app.route("/auth/login", methods=["GET", "POST"])
+def auth_login():
+    client_id = os.getenv('CLIENT_ID')
+    return redirect(f"https://accounts.google.com/o/oauth2/v2/auth?client_id={client_id}&redirect_uri=http://127.0.0.1:5000/auth&response_type=code&scope=email")
+
+# Callback de autenticação Google
+@app.route("/auth", methods=["GET", "POST"])
+def auth():
+    client_id = os.getenv('CLIENT_ID')
+    client_secret = os.getenv('CLIENT_SECRET')
+    code = request.args.get('code')
+
+    token_url = 'https://oauth2.googleapis.com/token'
+    payload = {
+        'code': code,
+        'client_id': client_id,
+        'client_secret': client_secret,
+        'redirect_uri': 'http://127.0.0.1:5000/auth',
+        'grant_type': 'authorization_code'
+    }
+    response = requests.post(token_url, data=payload)
+    response_data = response.json()
+
+    if 'error' in response_data:
+        flash("Erro ao buscar usuário")
+        return redirect(url_for('index'))
+    
+
+    access_token = response_data.get('access_token')
+
+
+    user_info_url = "https://www.googleapis.com/oauth2/v1/userinfo?access_token=" + access_token
+    user_info_response = requests.get(user_info_url)
+
+    if user_info_response.status_code != 200:
+        print(user_info_response.json())
+        flash("Erro ao buscar usuário")
+        return redirect(url_for('index'))
+    
+    user_info = user_info_response.json()
+    email = user_info['email']
+
+    db = ModelUser()
+    user = ModelUser.auth_login(db, email)
+    
+    if user:
+        login_user(user, remember=False)
+        return redirect(url_for('home'))
+    else:
+        flash("Usuário não cadastrado")
+        return redirect(url_for('index'))
+
 
 # Logout
 @app.route("/logout")
@@ -82,7 +130,7 @@ def home():
     current_user.atualiza_login()
     functions.loga_usuario(id_user)
     session['ultAbaAberta'] = 'home'
-    usuario = utils.to_df(functions.get_usuario(id_user), 'usuario')
+    usuario = utiles.to_df(functions.get_usuario(id_user), 'usuario')
     return render_template('base.html')
 
 
@@ -139,16 +187,16 @@ def add_chamado():
 
 @app.route('/chamado/view/<id_chamado>', methods=["GET", "POST"])
 def view_chamado(id_chamado):
-    chamado = utils.to_df(functions.get_chamado(id_chamado), 'chamado')
-    chamado = utils.limpaDatas(chamado)
+    chamado = utiles.to_df(functions.get_chamado(id_chamado), 'chamado')
+    chamado = utiles.limpaDatas(chamado)
     log_action(current_user.nome, 'VIEW', 'CHAMADO', id_chamado)
     if isinstance(chamado['assinatura_responsavel'][0], str):
-        ass_responsavel = utils.b64_to_bytes(chamado['assinatura_responsavel'][0])
+        ass_responsavel = utiles.b64_to_bytes(chamado['assinatura_responsavel'][0])
         ass_responsavel = base64.b64encode(ass_responsavel).decode('utf-8')
     else:
         ass_responsavel = ''
     if isinstance(chamado['assinatura_atendente'][0], str):
-        ass_atendente = utils.b64_to_bytes(chamado['assinatura_atendente'][0])
+        ass_atendente = utiles.b64_to_bytes(chamado['assinatura_atendente'][0])
         ass_atendente = base64.b64encode(ass_atendente).decode('utf-8')
     else:
         ass_atendente = ''
@@ -156,24 +204,24 @@ def view_chamado(id_chamado):
 
 @app.route('/view/chamados', methods=["GET", "POST"])
 def all_chamados():
-    chamados = utils.to_df(functions.get_all_chamados(), 'chamado')
-    chamados = utils.limpaDatas(chamados)
+    chamados = utiles.to_df(functions.get_chamados_usuario(session["_user_id"]), 'chamado')
+    chamados = utiles.limpaDatas(chamados)
     return render_template('atendimentos.html', df_atendimentos=chamados)
 
 @app.route('/chamado/edit/<id_chamado>', methods=["GET", "POST"])
 def edit_chamado(id_chamado):
-    chamado = utils.to_df(functions.get_chamado(id_chamado), 'chamado')
+    chamado = utiles.to_df(functions.get_chamado(id_chamado), 'chamado')
     form = UpdateAtendimentoForm()
     log_action(current_user.nome, 'EDIT', 'CHAMADO', id_chamado)
 
     if request.method == 'GET':
         if isinstance(chamado['assinatura_responsavel'][0], str):
-            ass_responsavel = utils.b64_to_bytes(chamado['assinatura_responsavel'][0])
+            ass_responsavel = utiles.b64_to_bytes(chamado['assinatura_responsavel'][0])
             ass_responsavel = base64.b64encode(ass_responsavel).decode('utf-8')
         else:
             ass_responsavel = ''
         if isinstance(chamado['assinatura_atendente'][0], str):
-            ass_atendente = utils.b64_to_bytes(chamado['assinatura_atendente'][0])
+            ass_atendente = utiles.b64_to_bytes(chamado['assinatura_atendente'][0])
             ass_atendente = base64.b64encode(ass_atendente).decode('utf-8')
         else:
             ass_atendente = ''
@@ -233,7 +281,7 @@ def edit_chamado(id_chamado):
 
 @app.route('/teste/<id_chamado>')
 def teste(id_chamado):
-    imagem = utils.bytes_to_img(functions.run_blank_get(f'SELECT assinatura_atendente FROM tbl_undb_chamados WHERE id_chamado = {id_chamado}')[0][0])
+    imagem = utiles.bytes_to_img(functions.run_blank_get(f'SELECT assinatura_atendente FROM tbl_undb_chamados WHERE id_chamado = {id_chamado}')[0][0])
     image = Image.open(imagem)
     image.show()
     return redirect(url_for('home'))

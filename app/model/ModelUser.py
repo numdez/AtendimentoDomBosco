@@ -1,4 +1,5 @@
 from .entidades.Usuario import Usuario
+import pandas as pd
 import sqlite3
 
 
@@ -22,13 +23,39 @@ class ModelUser():
             if row != None:
                 user = Usuario(row[0], row[2], Usuario.verify_password(
                     row[3], user.senha), row[1], row[7], row[6])
-                user.mostra_valores()
+                db._conn.close()
                 return user
             else:
                 return None
         except Exception as ex:
             raise Exception(ex)
     
+    
+    @classmethod
+    def auth_login(self, db, email):
+        try:
+            cursor = db._conn.cursor()
+            sql = (
+                f"SELECT * FROM tbl_undb_usuarios WHERE email_usuario = '{email}'")
+            row = cursor.execute(sql).fetchone()
+            if row != None:
+                user = pd.DataFrame(
+                    [row], 
+                    columns=['id_usuario', 'nome_usuario', 'email_usuario', 'senha_usuario', 'external_login', 
+                        'auth_secret', 'ult_data_login', 'tipo_usuario', 'assinatura']
+                )
+                user = Usuario(user['id_usuario'][0], user['email_usuario'][0], user['senha_usuario'][0], 
+                            user['nome_usuario'][0], user['tipo_usuario'][0], user['ult_data_login'][0],
+                            user['external_login'][0], user['auth_secret'][0])
+                db._conn.close()
+                return user
+            else:
+                return None
+        except Exception as ex:
+            raise Exception(ex)
+    
+
+
     @classmethod
     def get_by_id(self, db_loader, id):
         cursor = db_loader._conn.cursor()

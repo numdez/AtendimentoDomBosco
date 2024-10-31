@@ -5,7 +5,7 @@
 {% block navbar %}
 <button class="nav-link text-start text-dark fw-bold nav-button"
     id="v-pills-home-tab colorButton" data-bs-toggle="pill" data-bs-target="#v-pills-home"
-    type="button" role="tab" onclick="location.href='home';" aria-controls="v-pills-home" aria-selected="false" title="Home"><i
+    type="button" role="tab" onclick="redireciona('home');" aria-controls="v-pills-home" aria-selected="false" title="Home"><i
     class="bi bi-house"></i> <span class="nav-text">Home</span></button>
 <button class="nav-link text-start text-dark fw-bold nav-button" id="v-pills-contas-tab colorButton"
     data-bs-toggle="pill" data-bs-target="#v-pills-meus-dados" type="button" role="tab"
@@ -19,6 +19,12 @@
     data-bs-toggle="pill" data-bs-target="#v-pills-opt" type="button" role="tab" onclick="redireciona('chamados')"
     aria-controls="v-pills-opt" aria-selected="true" title="Chamados"><i class="bi bi-list-task"></i>
     <span class="nav-text">Chamados</span></button>  
+{% if current_user.tipo == 'Administrador' %}
+<button class="nav-link text-start text-start text-dark fw-bold nav-button" id="v-pills-adm-tab colorButton"
+    data-bs-toggle="pill" data-bs-target="#v-pills-adm" type="button" role="tab" onclick="redireciona('admin')"
+    aria-controls="v-pills-adm" aria-selected="false" title="Administrador"><i class="bi bi-person-lock"></i>
+    <span class="nav-text">Administrador</span></button>
+{% endif %}
 {% endblock %}
 
 {% block content %}
@@ -145,8 +151,16 @@
     let filtrosAtivos = {};
     let ordem = 'asc';
 
-    function setCookie(aba){
-        document.cookie = `ultAbaAberta=${aba}`;
+    function redireciona(aba){
+        switch(aba){
+            case 'home':
+                window.location.replace("{{ url_for('home') }}");
+                break;
+            case 'meusDados':
+                window.location.replace("{{ url_for('requisicoes') }}");
+                break;
+        }
+        
     }
 
     function toggleSearchBar(indice, idTabela, searchBarId, iconId) {
