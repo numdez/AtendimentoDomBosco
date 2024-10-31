@@ -1,6 +1,6 @@
 # Sistema de Atendimentos
 
-Projeto de um sistema de atendimentos escolares, voltado para pais com filhos que possuem necessidades especiais
+Projeto de um sistema de atendimentos escolares, voltado para pais de alunos com necessidades especiais
 
 ## Instalação
 
