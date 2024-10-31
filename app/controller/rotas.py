@@ -87,10 +87,8 @@ def auth():
     if 'error' in response_data:
         flash("Erro ao buscar usuário")
         return redirect(url_for('index'))
-    
 
     access_token = response_data.get('access_token')
-
 
     user_info_url = "https://www.googleapis.com/oauth2/v1/userinfo?access_token=" + access_token
     user_info_response = requests.get(user_info_url)
