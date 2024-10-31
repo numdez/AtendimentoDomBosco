@@ -31,6 +31,19 @@
 
     <!-- Bloco para CSS específico de cada página -->
     <style>
+        body::before {
+            content: "";
+            background-image: url("../static/resources/background.png");
+            background-size: cover;      /* Ajusta a imagem para cobrir a tela */
+            background-position: center; /* Centraliza a imagem */
+            background-repeat: no-repeat;
+            position: fixed;             /* Fixa a imagem em relação à viewport */
+            top: 0;
+            left: 0;
+            width: 100vw;                /* Cobre toda a largura da viewport */
+            height: 100vh;               /* Cobre toda a altura da viewport */
+            z-index: -1;                 /* Mantém a imagem atrás de outros elementos */
+        }
         #logo-here{
             width: auto;
             height: 6vh;
@@ -39,28 +52,21 @@
         .bg-dark {
             background-color: #563874 !important;
         }
-
-        main{
-            background-image: url("../static/resources/background.png");
-            background-position: center;
-            background-size: cover;
+        
+        main .card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-inline: 2vw;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
+
         /* Cartões principais */
         main .cards {
             display: flex;
             justify-content: center;
             margin: 40px 0;
             gap: 20px;
-        }
-
-        main .card {
-            background-color: white;
-            border-radius: 10px;
-            padding: 20px;
-            text-align: center;
-            width: 20vw;
-            margin-inline: 2vw;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
         main .card img {
@@ -86,7 +92,15 @@
             text-decoration: none;
         }
     </style>
-    {% block styles %}{% endblock %}
+    {% block styles %}
+    <style>
+        main .card {
+            text-align: center;
+            width: 20vw;
+        }
+    </style>
+    
+    {% endblock %}
 </head>
 <body onload="carregaLogo()">
     <body class="bg-light">
@@ -128,7 +142,7 @@
                                 aria-controls="v-pills-due" onclick="redireciona('documentos')" aria-selected="false" title="Documentos"><i class="bi bi-pass"></i>
                                 <span class="nav-text">Documentos</span></button>
                             <button class="nav-link text-start text-dark fw-bold nav-button" id="v-pills-opt-tab colorButton"
-                                data-bs-toggle="pill" data-bs-target="#v-pills-opt" type="button" role="tab" onclick="redireciona('chamados')"
+                                data-bs-toggle="pill" data-bs-target="#v-pills-opt" type="button" role="tab" onclick="redireciona('all_chamados')"
                                 aria-controls="v-pills-opt" aria-selected="false" title="Chamados"><i class="bi bi-list-task"></i>
                                 <span class="nav-text">Chamados</span></button>  
                                 {% if current_user.tipo == 'Administrador' %}
@@ -141,7 +155,7 @@
                         </div>
                     </div>
                 </nav>
-            <main class="col-md-12" style="height: 90vh;">
+            <main class="col-md-12 bg-here">
                 <div class="tab-content" id="v-pills-tabContent">
                     {% block content %}
                     <div class="tab-pane fade show active" id="v-pills-home" role="tabpanel"
@@ -150,12 +164,12 @@
                             <div class="card">
                                 <img src="../static/resources/aluno.png" alt="Icone Aluno">
                                 <h2>ALUNO</h2>
-                                <p>Atualize informações importantes do aluno, como endereço, contatos de emergência e dados médicos, de forma simples e rápida.</p>
+                                <p>Atualizar informações importantes do aluno, como endereço, contatos de emergência e dados médicos, de forma simples e rápida.</p>
                             </div>
                             <div class="card" onclick="location.href='view/chamados';" style="cursor: pointer;">
                                 <img src="../static/resources/atendimento.png" alt="Icone Atendimento">
                                 <h2>ATENDIMENTO</h2>
-                                <p>Conversar com um atendente para tirar dúvidas sobre o aluno(a), a escola e a metodologia.</p>
+                                <p>Iniciar um atendimento para tirar dúvidas sobre o aluno(a), a escola e a metodologia.</p>
                             </div>
                             <div class="card">
                                 <img src="../static/resources/documentos.png" alt="Icone Documentos">

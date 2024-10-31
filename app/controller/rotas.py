@@ -49,6 +49,8 @@ def index():
     if form.validate_on_submit():
         user = Usuario(0, form.email.data, form.senha.data)
         logged_user = ModelUser.login(db, user)
+        if isinstance(logged_user, str):
+            logged_user = None
         if logged_user and logged_user.senha:
             login_user(logged_user, remember=False)
             log_action(logged_user.nome, 'LOGIN')
@@ -149,18 +151,18 @@ def add_chamado():
             assinatura_string = ''
         if assinatura_string:
             if current_user.tipo == 'Usuário':
-                proc = f"""INSERT INTO tbl_undb_chamados(
+                proc = f"""INSERT INTO tbl_undb_chamados(id_usuario, 
                     data_atendimento, nome_aluno, data_nasc_aluno, serie_aluno, turma_aluno, nome_responsavel, 
                     parentesco_responsavel, email_responsavel, telefone_responsavel, celular_responsavel,
                     solicitado_por, questoes, aconselhamento, providencias, observacoes_finais, assinatura_responsavel
                 ) VALUES """
             elif current_user.tipo == 'Administrador' or current_user.tipo == 'Atendente':
-                proc = f"""INSERT INTO tbl_undb_chamados(
+                proc = f"""INSERT INTO tbl_undb_chamados(id_responsavel,
                     data_atendimento, nome_aluno, data_nasc_aluno, serie_aluno, turma_aluno, nome_responsavel, 
                     parentesco_responsavel, email_responsavel, telefone_responsavel, celular_responsavel,
                     solicitado_por, questoes, aconselhamento, providencias, observacoes_finais, assinatura_atendente
                 ) VALUES """
-            args = (datetime.today().date(), form.nome_aluno.data, form.nascimento_aluno.data,
+            args = (current_user.id, datetime.today().date(), form.nome_aluno.data, form.nascimento_aluno.data,
                     form.serie_aluno.data, form.turma_aluno.data, form.nome_responsavel.data,
                     form.parentesco_responsavel.data, form.email_responsavel.data, 
                     form.telefone_responsavel.data, form.celular_responsavel.data, form.solicitado_por.data,
@@ -168,12 +170,19 @@ def add_chamado():
                     form.observacoes_finais.data, assinatura_string
                 )
         else:
-            proc = f"""INSERT INTO tbl_undb_chamados(
+            if current_user.tipo == 'Usuário':
+                proc = f"""INSERT INTO tbl_undb_chamados(id_usuario, 
                     data_atendimento, nome_aluno, data_nasc_aluno, serie_aluno, turma_aluno, nome_responsavel, 
                     parentesco_responsavel, email_responsavel, telefone_responsavel, celular_responsavel,
                     solicitado_por, questoes, aconselhamento, providencias, observacoes_finais
                 ) VALUES """
-            args = (datetime.today().date(), form.nome_aluno.data, form.nascimento_aluno.data,
+            elif current_user.tipo == 'Administrador' or current_user.tipo == 'Atendente':
+                proc = f"""INSERT INTO tbl_undb_chamados(id_responsavel,
+                    data_atendimento, nome_aluno, data_nasc_aluno, serie_aluno, turma_aluno, nome_responsavel, 
+                    parentesco_responsavel, email_responsavel, telefone_responsavel, celular_responsavel,
+                    solicitado_por, questoes, aconselhamento, providencias, observacoes_finais
+                ) VALUES """
+            args = (current_user.id, datetime.today().date(), form.nome_aluno.data, form.nascimento_aluno.data,
                     form.serie_aluno.data, form.turma_aluno.data, form.nome_responsavel.data,
                     form.parentesco_responsavel.data, form.email_responsavel.data, 
                     form.telefone_responsavel.data, form.celular_responsavel.data, form.solicitado_por.data,
@@ -204,7 +213,11 @@ def view_chamado(id_chamado):
 
 @app.route('/view/chamados', methods=["GET", "POST"])
 def all_chamados():
-    chamados = utiles.to_df(functions.get_chamados_usuario(session["_user_id"]), 'chamado')
+    current_user.mostra_valores()
+    if current_user.tipo == 'Usuário':
+        chamados = utiles.to_df(functions.get_chamados_usuario(session["_user_id"]), 'chamado')
+    if current_user.tipo == 'Administrador' or current_user.tipo == 'Atendente':
+        chamados = utiles.to_df(functions.get_chamados_responsavel(session["_user_id"]), 'chamado')
     chamados = utiles.limpaDatas(chamados)
     return render_template('atendimentos.html', df_atendimentos=chamados)
 

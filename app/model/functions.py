@@ -31,6 +31,12 @@ def get_chamados_usuario(id):
     data = ModelUser.call_get_query(db, proc)
     return data
 
+def get_chamados_responsavel(id):
+    db = ModelUser()
+    proc = f"SELECT * FROM tbl_undb_chamados WHERE id_responsavel = {id} or id_responsavel is null"
+    data = ModelUser.call_get_query(db, proc)
+    return data
+
 def run_blank_query(proc, args):
     db = ModelUser()
     proc += '('

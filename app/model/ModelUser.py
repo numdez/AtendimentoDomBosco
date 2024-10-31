@@ -21,10 +21,17 @@ class ModelUser():
                 f"SELECT * FROM tbl_undb_usuarios WHERE email_usuario = '{user.email}'")
             row = cursor.execute(sql).fetchone()
             if row != None:
-                user = Usuario(row[0], row[2], Usuario.verify_password(
-                    row[3], user.senha), row[1], row[7], row[6])
+                usuario = pd.DataFrame(
+                    [row], 
+                    columns=['id_usuario', 'nome_usuario', 'email_usuario', 'senha_usuario', 'ult_data_login', 'tipo_usuario', 'assinatura']
+                )
+                if Usuario.verify_password(usuario['senha_usuario'][0], user.senha):
+                    usuario = Usuario(usuario['id_usuario'][0], usuario['email_usuario'][0], usuario['senha_usuario'][0], 
+                            usuario['nome_usuario'][0], usuario['tipo_usuario'][0], usuario['ult_data_login'][0])
+                else:
+                    usuario = 'Senha ou email inválido(s)!'
                 db._conn.close()
-                return user
+                return usuario
             else:
                 return None
         except Exception as ex:
@@ -41,12 +48,10 @@ class ModelUser():
             if row != None:
                 user = pd.DataFrame(
                     [row], 
-                    columns=['id_usuario', 'nome_usuario', 'email_usuario', 'senha_usuario', 'external_login', 
-                        'auth_secret', 'ult_data_login', 'tipo_usuario', 'assinatura']
+                    columns=['id_usuario', 'nome_usuario', 'email_usuario', 'senha_usuario', 'ult_data_login', 'tipo_usuario', 'assinatura']
                 )
                 user = Usuario(user['id_usuario'][0], user['email_usuario'][0], user['senha_usuario'][0], 
-                            user['nome_usuario'][0], user['tipo_usuario'][0], user['ult_data_login'][0],
-                            user['external_login'][0], user['auth_secret'][0])
+                            user['nome_usuario'][0], user['tipo_usuario'][0], user['ult_data_login'][0])
                 db._conn.close()
                 return user
             else:
@@ -65,7 +70,12 @@ class ModelUser():
         
         row = cursor.execute(sql).fetchone()
         if row != None:
-            logged_user = Usuario(row[0], row[2], row[3], row[1], row[7], row[6])
+            logged_user = pd.DataFrame(
+                    [row], 
+                    columns=['id_usuario', 'nome_usuario', 'email_usuario', 'senha_usuario', 'ult_data_login', 'tipo_usuario', 'assinatura']
+                )
+            logged_user = Usuario(logged_user['id_usuario'][0], logged_user['email_usuario'][0], logged_user['senha_usuario'][0], 
+                            logged_user['nome_usuario'][0], logged_user['tipo_usuario'][0], logged_user['ult_data_login'][0])
             return logged_user
         else:
             return None
@@ -84,6 +94,7 @@ class ModelUser():
             db._conn.close()
             if results:
                 return results
+                print(results)
             else:
                 return ''
         except Exception as ex:

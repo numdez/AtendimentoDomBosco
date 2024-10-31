@@ -3,15 +3,13 @@ from flask_login import UserMixin
 from datetime import datetime
 
 class Usuario(UserMixin):
-    def __init__(self,id,email,senha,nome="",tipo="", ult_data="", externo="", auth="") -> None:
+    def __init__(self,id,email,senha,nome="",tipo="", ult_data="") -> None:
         self.id = id
         self.email = email
         self.senha = senha
         self.nome = nome
         self.tipo = tipo
         self.ultimo_login = ult_data
-        self.externo = externo
-        self.auth = auth
         
     def mostra_valores(self):
         print(f'id: {self.id}')
@@ -20,8 +18,6 @@ class Usuario(UserMixin):
         print(f'nome: {self.nome}')
         print(f'tipo: {self.tipo}')
         print(f'ultimo login: {self.ultimo_login}')
-        print(f'externo: {self.externo}')
-        print(f'auth: {self.auth}')
 
     def atualiza_login(self):
         self.ultimo_login = datetime.today().date()

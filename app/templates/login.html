@@ -76,15 +76,19 @@
             <!-- Conteúdo principal -->
             <main class="col-md-5" style="margin-left:10vw !important">
                 <div class="card" style="height: 95%;">
-                    <form class="col-md-6 offset-md-3"  action="" method="POST">
+                    <form class="col-md-9"  action="" method="POST" style="margin-inline: 15%;">
                         {{form.csrf_token}}
-                        {% with messages = get_flashed_messages()%}
-                          {% if messages%}
-                            {% for message in messages%}
-                              <p>{{message}}</p>
-                            {%endfor%}
-                          {%endif%}
-                        {%endwith%}
+                        {% with messages = get_flashed_messages() %}
+                        {% if messages %}
+                        <div class="alert alert-danger" role="alert" style="margin-top:-10%">
+                          <ul class="flashed">
+                            {% for messages in messages %}
+                            <p>{{ messages }}</p>
+                            {% endfor %}
+                          </ul>
+                        </div>
+                        {% endif %}
+                        {% endwith %}
                         <h1 class="h3 mb-3 fw-normal text-center">Login</h1>
                   
                         <div class="form-group">
@@ -131,7 +135,7 @@
                             <button class="w-100 btn btn-lg btn-primary" type="submit">Entrar</button>
                             <p class="mt-5 mb-3 text-muted text-center">&copy; 2024–2028</p>
                       </form>
-                      <form class="col-md-6 offset-md-3" style="margin-top:10%;" action="{{ url_for('auth_login') }}" method="POST">
+                      <form class="col-md-9" style="margin-top:10%;margin-inline:15%" action="{{ url_for('auth_login') }}" method="POST">
                         {{form.csrf_token}}
                         <button class="w-100 gsi-material-button" type="submit">
                           <div class="gsi-material-button-state"></div>

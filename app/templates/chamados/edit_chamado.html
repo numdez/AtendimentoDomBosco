@@ -15,6 +15,14 @@
         border: 1px solid #000; /* Adiciona uma borda ao canvas */
         box-sizing: border-box; /* Inclui padding e borda na largura total */
     }
+
+    .card {
+        background-color: white;
+        border-radius: 10px;
+        padding: 20px;
+        margin-inline: 2vw;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
 </style>
 
 {% block content %}
@@ -31,7 +39,7 @@
             <div class="col align-self-start">
                 <form class="needs-validation" novalidate method="POST" id="myForm" enctype="multipart/form-data">
                     {{ form.csrf_token }}
-                    <div class="row g-3">
+                    <div class="card" style="height: 95%;">
                         <div class="row g-3">
 
                             <h4 class="mb-3">1. Dados do Aluno</h4>

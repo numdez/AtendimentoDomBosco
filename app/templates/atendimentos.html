@@ -28,121 +28,120 @@
 {% endblock %}
 
 {% block content %}
-<div class="tab-pane fade show active" id="v-pills-contas" role="tabpanel"
-    aria-labelledby="v-pills-chamados-tab" tabindex="0">
+        <div class="tab-pane fade show active" id="v-pills-contas" role="tabpanel"
+            aria-labelledby="v-pills-chamados-tab" tabindex="0">
 
-    <div class="nav"
-        style="display: flex; justify-content: space-between; align-items: center; padding: 10px;">
-        {% if current_user.tipo == 'Administrador' or current_user.tipo =='Usuário' %}
-        <div>
-            <h1 class="h2">Atendimentos</h1>
+            <div class="nav"
+                style="display: flex; justify-content: space-between; align-items: center; padding: 10px;">
+                {% if current_user.tipo == 'Administrador' or current_user.tipo =='Usuário' %}
+                <div>
+                    <h1 class="h2">Atendimentos</h1>
+                </div>
+                <div class="d-flex">
+                    <a class="btn btn-outline-dark" href="{{ url_for('add_chamado') }}">Adicionar</a>
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="table-responsive">
+                <table class="table" id="contaTable">
+                    <thead class="table-dark">
+                        <tr>
+                            <th class="reg-th" scope="col">Data
+                                <button class="btn-icon"
+                                    onclick="toggleSearchBar(0, 'contaTable', 'pesquisaNomeConta', 'nomeIconConta')">
+                                    <i class="bi bi-funnel" id="nomeIconConta"></i>
+                                </button>
+                                <button class="btn-icon" onclick="toggleSort(0, 'contaTable')"><i
+                                        class="bi bi-arrow-down-up"></i></button>
+
+
+                                <input type="text" class="form-control search-bar th-input"
+                                    id="pesquisaNomeConta" placeholder="Buscar"
+                                    onkeyup="updateFilters(0, 'contaTable', 'pesquisaNomeConta')">
+                            </th>
+                            <th class="reg-th" scope="col">Aluno
+                                <button class="btn-icon"
+                                    onclick="toggleSearchBar(1, 'contaTable', 'pesquisaTipoConta', 'tipoIconConta')">
+                                    <i class="bi bi-funnel" id="tipoIconConta"></i>
+                                </button>
+                                <button class="btn-icon" onclick="toggleSort(1, 'contaTable')"><i
+                                        class="bi bi-arrow-down-up"></i></button>
+
+
+                                <input type="text" class="form-control search-bar th-input"
+                                    id="pesquisaTipoConta" placeholder="Buscar"
+                                    onkeyup="updateFilters(1, 'contaTable', 'pesquisaTipoConta')">
+                            </th>
+                            <th class="reg-th" scope="col">Série
+                                <button class="btn-icon"
+                                    onclick="toggleSearchBar(2, 'contaTable', 'pesquisaAreaConta', 'areaIconConta')">
+                                    <i class="bi bi-funnel" id="areaIconConta"></i>
+                                </button>
+                                <button class="btn-icon" onclick="toggleSort(2, 'contaTable')"><i
+                                        class="bi bi-arrow-down-up"></i></button>
+
+
+                                <input type="text" class="form-control search-bar th-input"
+                                    id="pesquisaAreaConta" placeholder="Buscar Área"
+                                    onkeyup="updateFilters(2, 'contaTable', 'pesquisaAreaConta')">
+                            </th>
+                            <th class="reg-th" scope="col">Responsável
+                                <button class="btn-icon"
+                                    onclick="toggleSearchBar(3, 'contaTable', 'pesquisaRespConta', 'respIconConta')">
+                                    <i class="bi bi-funnel" id="respIconConta"></i>
+                                </button>
+                                <button class="btn-icon" onclick="toggleSort(3, 'contaTable')"><i
+                                        class="bi bi-arrow-down-up"></i></button>
+
+
+                                <input type="text" class="form-control search-bar th-input"
+                                    id="pesquisaRespConta" placeholder="Buscar"
+                                    onkeyup="updateFilters(3, 'contaTable', 'pesquisaRespConta')">
+                            </th>
+                            <th class="reg-th" scope="col">Origem
+                                <button class="btn-icon"
+                                    onclick="toggleSearchBar(4, 'contaTable', 'pesquisaOrigemConta', 'origemIconConta')">
+                                    <i class="bi bi-funnel" id="origemIconConta"></i>
+                                </button>
+                                <button class="btn-icon" onclick="toggleSort(4, 'contaTable')"><i
+                                        class="bi bi-arrow-down-up"></i></button>
+
+
+                                <input type="text" class="form-control search-bar th-input"
+                                    id="pesquisaOrigemConta" placeholder="Buscar"
+                                    onkeyup="updateFilters(4, 'contaTable', 'pesquisaOrigemConta')">
+                            </th>
+                            <th scope="col" class="text-center last-th">
+                                <button class="btn-icon" style="float:none"
+                                    onclick="resetFiltros('contaTable')" title="Limpar Filtros">
+                                    <i class="bi bi-x-square"></i>
+                                </button>
+                            </th>
+
+                        </tr>
+                    </thead>
+                        <tbody>
+                        {% for index, row in df_atendimentos.iterrows() %}
+                            <tr>
+                                <td class="reg-td">{{ row['data_atendimento'] }}</td>
+                                <td class="reg-td">{{ row['nome_aluno'] }}</td>
+                                <td class="reg-td">{{ row['serie_aluno'] }}</td>
+                                <td class="reg-td">{{ row['nome_responsavel'] }}</td>
+                                <td class="reg-td">{{ row['solicitado_por'] }}</td>
+
+                                <td class="text-center last-td">
+                                    <a class="btn"
+                                        href="{{ url_for('view_chamado', id_chamado = row['id_chamado']) }}">
+                                        <i class="bi bi-arrow-up-right-square"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
-        <div class="d-flex">
-            <a class="btn btn-outline-dark" href="{{ url_for('add_chamado') }}">Adicionar</a>
-        </div>
-        {% endif %}
-    </div>
-
-    <div class="table-responsive">
-        <table class="table" id="contaTable">
-            <thead class="table-dark">
-                <tr>
-                    <th class="reg-th" scope="col">Data
-                        <button class="btn-icon"
-                            onclick="toggleSearchBar(0, 'contaTable', 'pesquisaNomeConta', 'nomeIconConta')">
-                            <i class="bi bi-funnel" id="nomeIconConta"></i>
-                        </button>
-                        <button class="btn-icon" onclick="toggleSort(0, 'contaTable')"><i
-                                class="bi bi-arrow-down-up"></i></button>
-
-
-                        <input type="text" class="form-control search-bar th-input"
-                            id="pesquisaNomeConta" placeholder="Buscar"
-                            onkeyup="updateFilters(0, 'contaTable', 'pesquisaNomeConta')">
-                    </th>
-                    <th class="reg-th" scope="col">Aluno
-                        <button class="btn-icon"
-                            onclick="toggleSearchBar(1, 'contaTable', 'pesquisaTipoConta', 'tipoIconConta')">
-                            <i class="bi bi-funnel" id="tipoIconConta"></i>
-                        </button>
-                        <button class="btn-icon" onclick="toggleSort(1, 'contaTable')"><i
-                                class="bi bi-arrow-down-up"></i></button>
-
-
-                        <input type="text" class="form-control search-bar th-input"
-                            id="pesquisaTipoConta" placeholder="Buscar"
-                            onkeyup="updateFilters(1, 'contaTable', 'pesquisaTipoConta')">
-                    </th>
-                    <th class="reg-th" scope="col">Série
-                        <button class="btn-icon"
-                            onclick="toggleSearchBar(2, 'contaTable', 'pesquisaAreaConta', 'areaIconConta')">
-                            <i class="bi bi-funnel" id="areaIconConta"></i>
-                        </button>
-                        <button class="btn-icon" onclick="toggleSort(2, 'contaTable')"><i
-                                class="bi bi-arrow-down-up"></i></button>
-
-
-                        <input type="text" class="form-control search-bar th-input"
-                            id="pesquisaAreaConta" placeholder="Buscar Área"
-                            onkeyup="updateFilters(2, 'contaTable', 'pesquisaAreaConta')">
-                    </th>
-                    <th class="reg-th" scope="col">Responsável
-                        <button class="btn-icon"
-                            onclick="toggleSearchBar(3, 'contaTable', 'pesquisaRespConta', 'respIconConta')">
-                            <i class="bi bi-funnel" id="respIconConta"></i>
-                        </button>
-                        <button class="btn-icon" onclick="toggleSort(3, 'contaTable')"><i
-                                class="bi bi-arrow-down-up"></i></button>
-
-
-                        <input type="text" class="form-control search-bar th-input"
-                            id="pesquisaRespConta" placeholder="Buscar"
-                            onkeyup="updateFilters(3, 'contaTable', 'pesquisaRespConta')">
-                    </th>
-                    <th class="reg-th" scope="col">Origem
-                        <button class="btn-icon"
-                            onclick="toggleSearchBar(4, 'contaTable', 'pesquisaOrigemConta', 'origemIconConta')">
-                            <i class="bi bi-funnel" id="origemIconConta"></i>
-                        </button>
-                        <button class="btn-icon" onclick="toggleSort(4, 'contaTable')"><i
-                                class="bi bi-arrow-down-up"></i></button>
-
-
-                        <input type="text" class="form-control search-bar th-input"
-                            id="pesquisaOrigemConta" placeholder="Buscar"
-                            onkeyup="updateFilters(4, 'contaTable', 'pesquisaOrigemConta')">
-                    </th>
-                    <th scope="col" class="text-center last-th">
-                        <button class="btn-icon" style="float:none"
-                            onclick="resetFiltros('contaTable')" title="Limpar Filtros">
-                            <i class="bi bi-x-square"></i>
-                        </button>
-                    </th>
-
-                </tr>
-            </thead>
-                <tbody>
-                {% for index, row in df_atendimentos.iterrows() %}
-                    <tr>
-                        <td class="reg-td">{{ row['data_atendimento'] }}</td>
-                        <td class="reg-td">{{ row['nome_aluno'] }}</td>
-                        <td class="reg-td">{{ row['serie_aluno'] }}</td>
-                        <td class="reg-td">{{ row['nome_responsavel'] }}</td>
-                        <td class="reg-td">{{ row['solicitado_por'] }}</td>
-
-                        <td class="text-center last-td">
-                            <a class="btn"
-                                href="{{ url_for('view_chamado', id_chamado = row['id_chamado']) }}">
-                                <i class="bi bi-arrow-up-right-square"></i>
-                            </a>
-                        </td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-</div>
-    
 {% endblock %}
 
 

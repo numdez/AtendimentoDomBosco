@@ -7,18 +7,18 @@ from time import sleep
 import base64
 
 def to_df(data, tabela):
+    print(data)
     if data:
         match tabela.lower():
             case 'usuario':
                 data = pd.DataFrame(
                     data, 
-                    columns=['id_usuario', 'nome_usuario', 'email_usuario', 'senha_usuario', 'external_login', 
-                        'auth_secret', 'ult_data_login', 'tipo_usuario', 'assinatura']
+                    columns=['id_usuario', 'nome_usuario', 'email_usuario', 'senha_usuario', 'ult_data_login', 'tipo_usuario', 'assinatura']
                 )
             case 'chamado':
                 data = pd.DataFrame(
                     data, 
-                    columns=['id_chamado', 'data_atendimento', 'nome_aluno', 'data_nasc_aluno',
+                    columns=['id_chamado', 'id_responsavel', 'id_usuario', 'data_atendimento', 'nome_aluno', 'data_nasc_aluno',
                         'serie_aluno', 'turma_aluno', 'nome_responsavel', 'parentesco_responsavel',
                         'email_responsavel', 'telefone_responsavel', 'celular_responsavel', 'solicitado_por',
                         'questoes', 'aconselhamento', 'providencias', 'observacoes_finais', 
@@ -28,15 +28,15 @@ def to_df(data, tabela):
         match tabela.lower():
             case 'usuario':
                 data = pd.DataFrame( 
-                    columns=['id_usuario', 'nome_usuario', 'email_usuario', 'senha_usuario', 'external_login', 
-                             'auth_secret', 'ult_data_login', 'tipo_usuario', 'assinatura']
+                    columns=['id_usuario', 'nome_usuario', 'email_usuario', 'senha_usuario', 'ult_data_login', 'tipo_usuario', 'assinatura']
                 )
             case 'chamado':
                 data = pd.DataFrame(
-                    columns=['id_chamado', 'data_atendimento', 'nome_aluno', 'data_nasc_aluno',
+                    columns=['id_chamado', 'id_responsavel', 'id_usuario', 'data_atendimento', 'nome_aluno', 'data_nasc_aluno',
                         'serie_aluno', 'turma_aluno', 'nome_responsavel', 'parentesco_responsavel',
                         'email_responsavel', 'telefone_responsavel', 'celular_responsavel', 'solicitado_por',
-                        'questoes', 'aconselhamento', 'providencias', 'observacoes_finais', 'assinatura_responsavel', 'assinatura_atendente']
+                        'questoes', 'aconselhamento', 'providencias', 'observacoes_finais', 
+                        'assinatura_responsavel', 'assinatura_atendente']
                 )
     return data
 
