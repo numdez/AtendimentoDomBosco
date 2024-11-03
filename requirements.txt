@@ -26,3 +26,5 @@ qrcode==7.4.2
 pyotp==2.9.0
 pypng==0.20220715.0
 typing-extensions==4.12.2
+google-auth==2.35.0
+google-auth-lib==1.2.1
