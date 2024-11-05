@@ -59,3 +59,23 @@ class UpdateAtendimentoForm(FlaskForm):
     aconselhamento = TextAreaField("Aconselhamento / Observações da escola")
     providencias = TextAreaField("Providências")
     observacoes_finais = TextAreaField("Observações Finais")
+
+class AddMeusDados(FlaskForm):
+    logradouro = StringField("Logradouro")    
+    num = StringField("Número")
+    complemento = StringField("Complemento")
+    bairro = StringField("Bairro")
+    cep = StringField("CEP")
+    tel_fixo = StringField("Telefone Residencial")
+    tel_celular = StringField("Telefone Celular")
+    email = EmailField("E-mail")
+
+class UpdateMeusDados(FlaskForm):
+    logradouro = StringField("Logradouro")
+    num = StringField("Número")
+    complemento = StringField("Complemento")
+    bairro = StringField("Bairro")
+    cep = StringField("CEP")
+    tel_fixo = StringField("Telefone Residencial")
+    tel_celular = StringField("Telefone Celular")
+    email = EmailField("E-mail")
