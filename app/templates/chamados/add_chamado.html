@@ -93,10 +93,17 @@
 
                             <h4 class="mb-3">2. Dados do Responsável</h4>
 
+                            {% if current_user.tipo == 'Administrador' or current_user.tipo == 'Atendente'}
                             <div class="col-sm-12">
                                 <label for="nomeResp" class="form-label">Nome do Responsável<strong>*</strong></label>
                                 {{form.nome_responsavel(class="form-control", type="text", id="nomeResp")}}
                             </div>
+                            {% else %}
+                            <div class="col-sm-12">
+                                <label for="nomeResp" class="form-label">Nome do Responsável<strong>*</strong></label>
+                                {{form.nome_responsavel(class="form-control", type="text", id="nomeResp")}}
+                            </div>
+                            {% endif %}
 
                             <div class="col-sm-6">
                                 <label for="parentescoResp" class="form-label">Grau de Parentesco<strong>*</strong></label>

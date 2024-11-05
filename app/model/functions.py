@@ -51,3 +51,7 @@ def run_blank_get(proc):
     db = ModelUser()
     data = ModelUser.call_get_query(db, proc)
     return data
+
+def run_blank_set(proc):
+    db = ModelUser()
+    ModelUser.call_set_query(db, proc)

@@ -224,7 +224,7 @@ def edit_chamado(id_chamado):
     chamado = utiles.to_df(functions.get_chamado(id_chamado), 'chamado')
     form = UpdateAtendimentoForm()
     log_action(current_user.nome, 'EDIT', 'CHAMADO', id_chamado)
-
+    
     if request.method == 'GET':
         if isinstance(chamado['assinatura_responsavel'][0], str):
             ass_responsavel = utiles.b64_to_bytes(chamado['assinatura_responsavel'][0])
@@ -268,11 +268,11 @@ def edit_chamado(id_chamado):
         providencias = form.providencias.data if form.providencias.data != chamado['providencias'][0] else chamado['providencias'][0]
         observacoes_finais = form.observacoes_finais.data if form.observacoes_finais.data != chamado['observacoes_finais'][0] else chamado['observacoes_finais'][0]
         if assinatura_string:
-            if current_user.nivel == 'Usuário':
+            if current_user.tipo == 'Usuário':
                 ass_responsavel = assinatura_string
-                ass_atendente = chamado['assinatura_atendente'][0]            
+                ass_atendente = '' if not chamado['assinatura_atendente'][0] else chamado['assinatura_atendente'][0]
             else:
-                ass_responsavel = chamado['assinatura_responsavel'][0]
+                ass_responsavel = '' if not chamado['assinatura_responsavel'][0] else chamado['assinatura_responsavel'][0]
                 ass_atendente = assinatura_string
             proc = f"""
                 UPDATE tbl_undb_chamados SET nome_aluno = '{nome_aluno}', data_nasc_aluno = '{nascimento_aluno}', 
@@ -284,8 +284,19 @@ def edit_chamado(id_chamado):
                 assinatura_responsavel = '{ass_responsavel}', assinatura_atendente = '{ass_atendente}'
                 where id_chamado = {id_chamado}
             """
-            functions.update_chamado(proc)
+            functions.run_blank_set(proc)
+
             return redirect(url_for('view_chamado', id_chamado=id_chamado))
+    if isinstance(chamado['assinatura_responsavel'][0], str):
+        ass_responsavel = utiles.b64_to_bytes(chamado['assinatura_responsavel'][0])
+        ass_responsavel = base64.b64encode(ass_responsavel).decode('utf-8')
+    else:
+        ass_responsavel = ''
+    if isinstance(chamado['assinatura_atendente'][0], str):
+        ass_atendente = utiles.b64_to_bytes(chamado['assinatura_atendente'][0])
+        ass_atendente = base64.b64encode(ass_atendente).decode('utf-8')
+    else:
+        ass_atendente = ''
     return render_template('/chamados/edit_chamado.html', chamado=chamado, form=form, ass_responsavel=ass_responsavel, ass_atendente=ass_atendente)
 
 

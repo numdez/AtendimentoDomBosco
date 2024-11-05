@@ -7,7 +7,6 @@ from time import sleep
 import base64
 
 def to_df(data, tabela):
-    print(data)
     if data:
         match tabela.lower():
             case 'usuario':
