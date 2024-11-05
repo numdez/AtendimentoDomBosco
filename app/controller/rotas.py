@@ -133,6 +133,11 @@ def home():
     usuario = utiles.to_df(functions.get_usuario(id_user), 'usuario')
     return render_template('base.html')
 
+@app.route('/meusdados', methods=["GET", "POST"])
+def meus_dados():
+    dados = utiles.to_df(functions.get_chamado(current_user.id), 'usuario')
+    dados = utiles.limpaDatas(dados)
+    return render_template('meusdados.html', dados=dados)
 
 @app.route('/chamado/add', methods=['GET', 'POST'])
 def add_chamado():
