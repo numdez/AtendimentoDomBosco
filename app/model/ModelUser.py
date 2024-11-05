@@ -79,6 +79,65 @@ class ModelUser():
             return logged_user
         else:
             return None
+        
+    @classmethod
+    def add(self, db, user):
+        try:
+            cursor = db._conn.cursor()
+            sql = (
+                f"INSERT INTO tbl_undb_usuarios (nome_usuario, email_usuario, senha_usuario, tipo_usuario, assinatura) "
+                f"VALUES ('{user.nome}', '{user.email}', '{user.senha}', '{user.tipo}', '{user.assinatura}')"
+            )
+            cursor.execute(sql)
+            db._conn.commit()
+            db._conn.close()
+            return "Usuário adicionado com sucesso!"
+        except Exception as ex:
+            raise Exception("Erro ao adicionar usuário: " + str(ex))
+
+    @classmethod
+    def get_all(self, db):
+        try:
+            cursor = db._conn.cursor()
+            sql = "SELECT * FROM tbl_undb_usuarios"
+            rows = cursor.execute(sql).fetchall()
+            usuarios = pd.DataFrame(rows, columns=['id_usuario', 'nome_usuario', 'email_usuario', 'senha_usuario', 'ult_data_login', 'tipo_usuario', 'assinatura'])
+            db._conn.close()
+            return usuarios
+        except Exception as ex:
+            raise Exception("Erro ao listar usuários: " + str(ex))
+
+    @classmethod
+    def update(self, db, user):
+        try:
+            cursor = db._conn.cursor()
+            sql = (
+                f"UPDATE tbl_undb_usuarios SET "
+                f"nome_usuario = '{user.nome}', "
+                f"email_usuario = '{user.email}', "
+                f"senha_usuario = '{user.senha}', "
+                f"tipo_usuario = '{user.tipo}', "
+                f"assinatura = '{user.assinatura}' "
+                f"WHERE id_usuario = {user.id}"
+            )
+            cursor.execute(sql)
+            db._conn.commit()
+            db._conn.close()
+            return "Usuário atualizado com sucesso!"
+        except Exception as ex:
+            raise Exception("Erro ao atualizar usuário: " + str(ex))
+
+    @classmethod
+    def delete(self, db, id):
+        try:
+            cursor = db._conn.cursor()
+            sql = f"DELETE FROM tbl_undb_usuarios WHERE id_usuario = {id}"
+            cursor.execute(sql)
+            db._conn.commit()
+            db._conn.close()
+            return "Usuário excluído com sucesso!"
+        except Exception as ex:
+            raise Exception("Erro ao excluir usuário: " + str(ex))
 
     @classmethod
     def call_get_query(self, db, query):
