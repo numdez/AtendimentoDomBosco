@@ -69,16 +69,11 @@
                     <div class="card" style="height: 95%;">
                         <div class="row g-3">
 
-                            <h4 class="mb-3">1. Dados do Aluno</h4>
+                            <h4 class="mb-3">Endereço</h4>
 
                             <div class="col-sm-6">
                                 <label for="cepResp" class="form-label">CEP</label>
-                                {{form.cep(class="form-control", oninput="buscarCEP(this.value)", type="text", id="cepResp")}}
-                            </div>
-
-                            <div class="col-sm-12">
-                                <label for="logradouro" class="form-label">Logradouro</label>
-                                {{form.rua(class="form-control", type="text", id="logradouro")}}
+                                {{form.cep(class="form-control", oninput="formatarEBuscarCEP(this)", maxlength="9", type="text", id="cepResp")}}
                             </div>
 
                             <div class="col-sm-6">
@@ -86,17 +81,22 @@
                                 {{form.num(class="form-control", type="text", id="num")}}
                             </div>
 
+                            <div class="col-sm-12">
+                                <label for="logradouro" class="form-label">Logradouro</label>
+                                {{form.logradouro(class="form-control", type="text", id="logradouro")}}
+                            </div>
+
                             <div class="col-sm-6">
                                 <label for="bairro" class="form-label">Bairro</label>
                                 {{form.bairro(class="form-control", type="text", id="bairro")}}
                             </div>
 
-                            <div class="col-sm-12">
+                            <div class="col-sm-6">
                                 <label for="complemento" class="form-label">Complemento</label>
                                 {{form.complemento(class="form-control", type="text", id="complemento")}}
                             </div>
 
-                            <h4 class="mb-3">2. Dados do Responsável</h4>
+                            <h4 class="mb-3">Contato</h4>
 
                             <div class="col-sm-6">
                                 <label for="tel_fixo" class="form-label">Telefone Residencial</label>
@@ -105,23 +105,16 @@
 
                             <div class="col-sm-6">
                                 <label for="telResp" class="form-label">Telefone<strong>*</strong></label>
-                                {{form.telefone_responsavel(class="form-control", type="text", id="telResp")}}
+                                {{form.tel_celular(class="form-control", type="text", id="telResp")}}
                             </div>
                             
-                            {% if current_user.tipo == 'Usuário' %}
                             <div class="col-sm-6">
                                 <label for="emailResp" class="form-label">E-mail</label>
                                 {{form.email(class="form-control", type="email", id="emailResp", value=current_user.email)}}
                             </div>
-                            {% else %}
-                            <div class="col-sm-6">
-                                <label for="emailResp" class="form-label">E-mail</label>
-                                {{form.email(class="form-control", type="email", id="emailResp")}}
-                            </div>
-                            {% endif %} 
-                            
+  
                             <div class="col-sm-2 mb-6">
-                                <button class="w-100 btn btn-dark btn-sm" type="submit">Salvar</button>
+                                <button class="w-100 btn btn-dark btn-sm" style="margin-top:25%" type="submit">Salvar</button>
                             </div>
 
                             <div>
@@ -135,14 +128,42 @@
     </main>
 </div>
 <script>
-    function buscarCEP(cep) {
-        // Remove qualquer caractere que não seja número
-        cep = cep.replace(/\D/g, '');
+    function redireciona(aba){
+        switch(aba){
+            case 'home':
+                window.location.replace("{{ url_for('home') }}");
+                break;
+            case 'meusDados':
+                window.location.replace("{{ url_for('base_dados') }}");
+                break;
+            case 'all_chamados':
+                window.location.replace("{{ url_for('all_chamados') }}");
+                break;
+            case 'admin':
+                window.location.replace("{{ url_for('all_usuarios') }}");
+                break;
+        }
+            
+    }
 
-        // URL da API ViaCEP com o CEP fornecido
+    function formatarEBuscarCEP(input) {
+        // Formatação do CEP
+        let cep = input.value.replace(/\D/g, ''); // Remove todos os caracteres não numéricos
+        cep = cep.substring(0, 8); // Limita a string a no máximo 8 dígitos numéricos
+        if (cep.length > 5) {
+            cep = cep.substring(0, 5) + '-' + cep.substring(5); // Insere o hífen após o quinto dígito
+        }
+        input.value = cep; // Atualiza o valor do campo com a formatação
+
+        // Verifica se o CEP possui 8 dígitos (sem contar o hífen) para buscar automaticamente
+        if (cep.length === 9) {
+            buscarCEP(cep.replace('-', '')); // Remove o hífen para a busca
+        }
+    }
+
+    function buscarCEP(cep) {
         const url = `https://viacep.com.br/ws/${cep}/json/`;
 
-        // Faz a requisição para a API ViaCEP
         fetch(url)
             .then(response => {
                 if (!response.ok) {
@@ -152,13 +173,11 @@
             })
             .then(data => {
                 if (data.erro) {
-                    console.log("CEP não encontrado");
+                    alert("CEP não encontrado");
                 } else {
-                    // Exibe os dados do endereço no console
-                    document.getElementById("logradouro").textContent = data.logradouro;
-                    document.getElementById("bairro").textContent = data.bairro;
-                    document.getElementById("cidade").textContent = data.localidade;
-                    document.getElementById("estado").textContent = data.uf;
+                    // Atualiza os elementos HTML com as informações do endereço
+                    document.getElementById("logradouro").value = data.logradouro;
+                    document.getElementById("bairro").value = data.bairro;
                 }
             })
             .catch(error => {

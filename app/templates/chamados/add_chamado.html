@@ -24,6 +24,35 @@
         margin-inline: 2vw;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
+
+    datalist {
+        margin-top:-1px;
+        overflow-y: auto;
+        box-sizing: border-box;
+        display: block;
+        background-color: #ffffff;
+        border: 1px solid #404449;
+        border-radius: 0 0 4px 4px;
+        font-family: sans-serif;
+        padding: 5px;
+        max-height: 8rem;
+        border: 1px solid #000000;
+        border-color: #000000;
+        box-shadow: 0 0 0 0.2rem rgba(10, 10, 10, 0.25);
+        clip-path: inset(0px -10px -10px -10px);
+        position: relative;
+        width: auto !important;    
+    }
+    .datalist_option {
+        padding: 2px;
+        color: #000000;
+        margin-bottom: 1px;
+        font-size: 1.75vh;
+        cursor: pointer;
+        display:block;
+    }
+
+    option:hover{background-color: #abbacd;}
 </style>
 {% endblock %}
 
@@ -36,10 +65,6 @@
     data-bs-toggle="pill" data-bs-target="#v-pills-meus-dados" type="button" role="tab"
     aria-controls="v-pills-meus-dados" onclick="redireciona('meusDados')" aria-selected="false" title="Meus Dados"><i class="bi bi-person"></i><span
         class="nav-text">Meus Dados</span></button>
-<button class="nav-link text-start text-dark fw-bold nav-button" id="v-pills-due-tab colorButton"
-    data-bs-toggle="pill" data-bs-target="#v-pills-due" type="button" role="tab"
-    aria-controls="v-pills-due" onclick="redireciona('documentos')" aria-selected="false" title="Documentos"><i class="bi bi-pass"></i>
-    <span class="nav-text">Documentos</span></button>
 <button class="nav-link active text-start text-dark fw-bold nav-button" id="v-pills-opt-tab colorButton"
     data-bs-toggle="pill" data-bs-target="#v-pills-opt" type="button" role="tab" onclick="redireciona('chamados')"
     aria-controls="v-pills-opt" aria-selected="true" title="Chamados"><i class="bi bi-list-task"></i>
@@ -69,6 +94,7 @@
                     <div class="card" style="height: 95%;">
                         <div class="row g-3">
 
+                            
                             <h4 class="mb-3">1. Dados do Aluno</h4>
 
                             <div class="col-sm-6">
@@ -93,14 +119,28 @@
 
                             <h4 class="mb-3">2. Dados do Responsável</h4>
 
-                            {% if current_user.tipo == 'Administrador' or current_user.tipo == 'Atendente'}
-                            <div class="col-sm-12">
-                                <label for="nomeResp" class="form-label">Nome do Responsável<strong>*</strong></label>
-                                {{form.nome_responsavel(class="form-control", type="text", id="nomeResp")}}
+                            {% if current_user.tipo == 'Administrador' or current_user.tipo == 'Atendente' %}
+                            <div class="col-sm-3" style="display:none">
+                                <label for="id_usuario" class="form-label">Código do Responsável <strong>*</strong></label>
+                                {{form.id_usuario(class="form-control", type="text", id="id_usuario")}}
                             </div>
+
+                            <div class="col-sm-12">
+                                <label for="searchInput" class="form-label">Responsável<strong>*</strong></label>
+                                {{form.nome_responsavel(class="form-control", type="text", 
+                                id="searchInput", autocomplete="off", style="clip-path: inset(-10px -10px 0px -10px);")}}
+                                <datalist id="optionsList">
+                                    {% for option in options %}
+                                    <option id="dynamicOption" class="datalist_option" value="{{ option }}">{{ option }}</option>
+                                    {% endfor %}
+                                </datalist>
+                                {% if form.id_usuario.flags.required %}
+                                <div class="invalid-feedback">* Este campo é obrigatório.</div>
+                                {% endif %}
+                            </div>                            
                             {% else %}
                             <div class="col-sm-12">
-                                <label for="nomeResp" class="form-label">Nome do Responsável<strong>*</strong></label>
+                                <label for="nomeResp" class="form-label">NResponsável<strong>*</strong></label>
                                 {{form.nome_responsavel(class="form-control", type="text", id="nomeResp")}}
                             </div>
                             {% endif %}
@@ -185,6 +225,132 @@
     </main>
 </div>
 <script>
+
+    function redireciona(aba){
+        switch(aba){
+            case 'home':
+                window.location.replace("{{ url_for('home') }}");
+                break;
+            case 'meusDados':
+                window.location.replace("{{ url_for('base_dados') }}");
+                break;
+            case 'all_chamados':
+                window.location.replace("{{ url_for('all_chamados') }}");
+                break;
+            case 'admin':
+                window.location.replace("{{ url_for('all_usuarios') }}");
+                break;
+        }
+            
+    }
+
+    function fancyDropdown(inputId){
+        id = document.getElementById(inputId);
+        datalist = document.getElementById('optionsList');
+        var minWidth = datalist.offsetWidth;
+
+
+        function outputsize(){
+            if (id.offsetWidth < minWidth ){
+            datalist.style.minwidth = id.offsetWidth+'px';
+            }else{
+            datalist.style.width = id.offsetWidth+'px';
+            }
+        }
+
+        new ResizeObserver(outputsize).observe(id);
+
+
+            
+        id.addEventListener("input", function(e){
+            datalist.style.display = "block";
+            var text = id.value.toUpperCase();
+            let hide = 1;
+            for (let option of datalist.options) {
+                if(option.value.toUpperCase().indexOf(text) > -1){
+                    option.style.display = "block";
+                    hide = 0;
+                }else{
+                    option.style.display = "none";
+                }
+            }
+            if (hide){
+                datalist.style.display = "none";
+                id.style.borderRadius = "var(--bs-border-radius)";
+                id.style.clipPath = "inset(-10px -10px -10px -10px)";
+            }
+        });
+        
+            
+        id.addEventListener("blur", function(e){
+            
+            var inputVal = id.value;
+            var options = datalist.options;
+            var valid = false;
+            for (var i=0; i < options.length; i++){
+                if(inputVal.toLowerCase() == options[i].value.toLowerCase()){
+                    valid = true;
+                    break;
+                }
+            }
+            console.log(valid);
+            if (!valid) {
+                var codConta = document.getElementById('id_usuario');
+                codConta.value = '';
+                id.value = '';
+            } else{
+                var codConta = document.getElementById('id_usuario');
+                var nomeEmpresa = document.getElementById('searchInput');
+                codConta.value = nomeEmpresa.value.split(' - ')[0];
+            }
+        }); 
+           
+
+        id.addEventListener("click", function(e){
+        
+            let hide = 1;
+            for (let option of datalist.options) {
+                if (window.getComputedStyle(option, null).display == "block") hide = 0;
+            }
+        
+            if (datalist.style.display == "block" || hide == 1){
+                datalist.style.display = "none";
+                id.style.borderRadius = "var(--bs-border-radius)";
+                id.style.clipPath = "inset(-10px -10px -10px -10px)";
+                
+            }else{
+                id.style.borderRadius = "5px 5px 0 0";
+                id.style.clipPath = "inset(-10px -10px 0px -10px)";
+                datalist.style.display = "block";
+            }
+        });
+            
+
+        document.addEventListener("click", function(e){
+
+            if (e.target.id == "dynamicOption"){
+                id.value = e.target.value;
+                console.log(id.value);
+                var codConta = document.getElementById('id_usuario');
+                codConta.value = id.value.split(' - ')[0];
+                console.log(codConta.value);
+            }
+            if ((e.target.tagName !== "DATALIST" && e.target.tagName !== "INPUT") || (e.target.id != 'searchInput')){
+                datalist.style.display = "none";
+                id.style.borderRadius = "var(--bs-border-radius)";
+                id.style.clipPath = "inset(-10px -10px -10px -10px)";
+            }
+
+        });
+
+            datalist.style.display = "none";
+            id.style.borderRadius = "var(--bs-border-radius)";
+            id.style.clipPath = "inset(-10px -10px -10px -10px)";
+
+    }
+
+    fancyDropdown('searchInput');
+
     document.addEventListener("DOMContentLoaded", function () {
         var canvas = document.getElementById('signature-pad');
         var ctx = canvas.getContext('2d');

@@ -2,7 +2,6 @@
 {% extends "base.html" %}
 
 {% block title %}Formulário com Assinatura{% endblock %}
-
 {% block styles %}
 <style>
     .radio-group{
@@ -32,18 +31,18 @@
     id="v-pills-home-tab colorButton" data-bs-toggle="pill" data-bs-target="#v-pills-home"
     type="button" role="tab" onclick="redireciona('home');" aria-controls="v-pills-home" aria-selected="false" title="Home"><i
     class="bi bi-house"></i> <span class="nav-text">Home</span></button>
-<button class="nav-link active text-start text-dark fw-bold nav-button" id="v-pills-contas-tab colorButton"
+<button class="nav-link text-start text-dark fw-bold nav-button" id="v-pills-contas-tab colorButton"
     data-bs-toggle="pill" data-bs-target="#v-pills-meus-dados" type="button" role="tab"
-    aria-controls="v-pills-meus-dados" onclick="redireciona('meusDados')" aria-selected="true" title="Meus Dados"><i class="bi bi-person"></i><span
+    aria-controls="v-pills-meus-dados" onclick="redireciona('meusDados')" aria-selected="false" title="Meus Dados"><i class="bi bi-person"></i><span
         class="nav-text">Meus Dados</span></button>
 <button class="nav-link text-start text-dark fw-bold nav-button" id="v-pills-opt-tab colorButton"
     data-bs-toggle="pill" data-bs-target="#v-pills-opt" type="button" role="tab" onclick="redireciona('all_chamados')"
     aria-controls="v-pills-opt" aria-selected="false" title="Atendimentos"><i class="bi bi-list-task"></i>
     <span class="nav-text">Chamados</span></button>  
 {% if current_user.tipo == 'Administrador' %}
-<button class="nav-link text-start text-start text-dark fw-bold nav-button" id="v-pills-adm-tab colorButton"
+<button class="nav-link active text-start text-start text-dark fw-bold nav-button" id="v-pills-adm-tab colorButton"
     data-bs-toggle="pill" data-bs-target="#v-pills-adm" type="button" role="tab" onclick="redireciona('admin')"
-    aria-controls="v-pills-adm" aria-selected="false" title="Administrador"><i class="bi bi-person-lock"></i>
+    aria-controls="v-pills-adm" aria-selected="true" title="Administrador"><i class="bi bi-person-lock"></i>
     <span class="nav-text">Administrador</span></button>
 {% endif %}
 {% endblock %}
@@ -54,70 +53,44 @@
     <div class="pt-4 nav justify-content-end">
 
         <div class="d-flex">
-            <a class="btn btn-outline-dark m-2" href="{{ url_for('edit_dados') }}">Editar</a>
-            <a class="btn btn-outline-dark m-2" href="{{ url_for('home') }}">Voltar</a>
+            <a class="btn btn-outline-dark m-2" href="{{ url_for('all_usuarios') }}">Voltar</a>
         </div>
     </div>
-    <main class="form-signin w-75 m-auto bg-here">
+    <main class="form-signin w-75 m-auto">
         <div class="row g-5">
             <div class="col align-self-start">
-                <form class="needs-validation" novalidate>
+                <form class="needs-validation" novalidate method="POST" id="myForm" enctype="multipart/form-data">
+                    {{ form.csrf_token }}
                     <div class="card" style="height: 95%;">
                         <div class="row g-3">
-                            <h4 class="mb-3">1. Endereço</h4>
+
+                            <h4 class="mb-3">Adicionar Usuário</h4>
 
                             <div class="col-sm-6">
-                                <label for="cepResp" class="form-label">CEP</label>
-                                <label class="form-control">{{ dados['cep'][0] }}</label>
-                            </div>
-
-                            <div class="col-sm-6">
-                                <label for="num" class="form-label">Número</label>
-                                <label class="form-control">{{ dados['num'][0] }}</label>
-                            </div>
-
-                            <div class="col-sm-12">
-                                <label for="logradouro" class="form-label">Logradouro</label>
-                                <label class="form-control">{{ dados['rua'][0] }}</label>
-                            </div>
-
-                            <div class="col-sm-12">
-                                <label for="bairro" class="form-label">Bairro</label>
-                                <label class="form-control">{{ dados['bairro'][0] }}</label>
-                            </div>
-
-                            <div class="col-sm-12">
-                                <label for="complemento" class="form-label">Complemento</label>
-                                <label class="form-control">{{ dados['complemento'][0] }}</label>
-                            </div>
-
-                            <h4 class="mb-3">2. Contato</h4>
-
-                            <div class="col-sm-6">
-                                <label for="tel_fixo" class="form-label">Telefone Residencial</label>
-                                <label class="form-control">{{ dados['tel_fixo'][0] }}</label>
+                                <label for="nome" class="form-label">Nome</label>
+                                {{form.nome_usuario(class="form-control", type="text", id="nome")}}
                             </div>
 
                             <div class="col-sm-6">
-                                <label for="telResp" class="form-label">Telefone Celular</label>
-                                <label class="form-control">{{ dados['tel_celular'][0] }}</label>
+                                <label for="nascAlu" class="form-label">E-mail</label>
+                                {{form.email_usuario(class="form-control", type="email", id="email")}}
                             </div>
-                                
+
                             <div class="col-sm-6">
-                                <label for="emailResp" class="form-label">E-mail</label>
-                                <label class="form-control">{{ dados['email'][0] }}</label>
+                                <label for="senha" class="form-label">Senha</label>
+                                {{form.senha_usuario(class="form-control", type="password", id="senha")}}
                             </div>
+
+                            <div class="col-sm-6">
+                                <label for="tipo" class="form-label">Nível</label>
+                                {{form.tipo_usuario(class="form-select", type="select", id="tipo")}}
+                            </div>                 
                             
-                                
                             <div class="col-sm-2 mb-6">
-                                <button class="w-100 btn btn-dark btn-sm" type="submit" style="margin-top: 25%;">Salvar</button>
+                                <button class="w-100 btn btn-dark btn-sm" type="submit">Salvar</button>
                             </div>
 
-                            </div>
                         </div>
-                    </card>
-                    <div class="mb-6">
-                        <br>
                     </div>
                 </form>
             </div>

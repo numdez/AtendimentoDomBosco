@@ -20,20 +20,22 @@
 {% block navbar %}
 <button class="nav-link text-start text-dark fw-bold nav-button"
     id="v-pills-home-tab colorButton" data-bs-toggle="pill" data-bs-target="#v-pills-home"
-    type="button" role="tab" onclick="location.href='home';" aria-controls="v-pills-home" aria-selected="false" title="Home"><i
+    type="button" role="tab" onclick="redireciona('home');" aria-controls="v-pills-home" aria-selected="false" title="Home"><i
     class="bi bi-house"></i> <span class="nav-text">Home</span></button>
 <button class="nav-link text-start text-dark fw-bold nav-button" id="v-pills-contas-tab colorButton"
     data-bs-toggle="pill" data-bs-target="#v-pills-meus-dados" type="button" role="tab"
-    aria-controls="v-pills-meus-dados" onclick="location.href='view/meus_dados';" aria-selected="false" title="Meus Dados"><i class="bi bi-person"></i><span
+    aria-controls="v-pills-meus-dados" onclick="redireciona('meusDados')" aria-selected="false" title="Meus Dados"><i class="bi bi-person"></i><span
         class="nav-text">Meus Dados</span></button>
-<button class="nav-link text-start text-dark fw-bold nav-button" id="v-pills-due-tab colorButton"
-    data-bs-toggle="pill" data-bs-target="#v-pills-due" type="button" role="tab"
-    aria-controls="v-pills-due" onclick="location.href='view/documentos';" aria-selected="false" title="Documentos"><i class="bi bi-pass"></i>
-    <span class="nav-text">Documentos</span></button>
 <button class="nav-link active text-start text-dark fw-bold nav-button" id="v-pills-opt-tab colorButton"
-    data-bs-toggle="pill" data-bs-target="#v-pills-opt" type="button" role="tab" onclick="location.href='view/chamados';"
+    data-bs-toggle="pill" data-bs-target="#v-pills-opt" type="button" role="tab" onclick="redireciona('chamados')"
     aria-controls="v-pills-opt" aria-selected="true" title="Chamados"><i class="bi bi-list-task"></i>
     <span class="nav-text">Chamados</span></button>  
+{% if current_user.tipo == 'Administrador' %}
+<button class="nav-link text-start text-start text-dark fw-bold nav-button" id="v-pills-adm-tab colorButton"
+    data-bs-toggle="pill" data-bs-target="#v-pills-adm" type="button" role="tab" onclick="redireciona('admin')"
+    aria-controls="v-pills-adm" aria-selected="false" title="Administrador"><i class="bi bi-person-lock"></i>
+    <span class="nav-text">Administrador</span></button>
+{% endif %}
 {% endblock %}
 
 {% block content %}
@@ -51,7 +53,6 @@
             <div class="col align-self-start">
                 <form class="needs-validation" novalidate>
                     <div class="row g-3">
-
                         <h4 class="mb-3">1. Dados do Aluno</h4>
 
                         <div class="col-sm-6">
@@ -165,6 +166,25 @@
     </main>
 </div>
 <script>
+
+    function redireciona(aba){
+        switch(aba){
+            case 'home':
+                window.location.replace("{{ url_for('home') }}");
+                break;
+            case 'meusDados':
+                window.location.replace("{{ url_for('base_dados') }}");
+                break;
+            case 'all_chamados':
+                window.location.replace("{{ url_for('all_chamados') }}");
+                break;
+            case 'admin':
+                window.location.replace("{{ url_for('all_usuarios') }}");
+                break;
+        }
+            
+    }
+
     document.addEventListener("DOMContentLoaded", function () {
         var canvas = document.getElementById('signature-pad');
         var ctx = canvas.getContext('2d');

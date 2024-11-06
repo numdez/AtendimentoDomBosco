@@ -153,7 +153,6 @@ class ModelUser():
             db._conn.close()
             if results:
                 return results
-                print(results)
             else:
                 return ''
         except Exception as ex:

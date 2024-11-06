@@ -23,6 +23,7 @@ class UpdateUsuarioForm(FlaskForm):
     tipo = SelectField("Tipo de usuário")
 
 class AddAtendimentoForm(FlaskForm):
+    id_usuario = StringField("Código usuario")
     nome_aluno = StringField("Nome do Aluno", validators=[DataRequired()])
     #data_atendimento = DateField("Data Atendimento", validators=[DataRequired()])
     nascimento_aluno = DateField("Data de Nascimento")
@@ -60,7 +61,7 @@ class UpdateAtendimentoForm(FlaskForm):
     providencias = TextAreaField("Providências")
     observacoes_finais = TextAreaField("Observações Finais")
 
-class AddMeusDados(FlaskForm):
+class AddMeusDadosForm(FlaskForm):
     logradouro = StringField("Logradouro")    
     num = StringField("Número")
     complemento = StringField("Complemento")
@@ -70,7 +71,7 @@ class AddMeusDados(FlaskForm):
     tel_celular = StringField("Telefone Celular")
     email = EmailField("E-mail")
 
-class UpdateMeusDados(FlaskForm):
+class UpdateMeusDadosForm(FlaskForm):
     logradouro = StringField("Logradouro")
     num = StringField("Número")
     complemento = StringField("Complemento")
@@ -79,3 +80,15 @@ class UpdateMeusDados(FlaskForm):
     tel_fixo = StringField("Telefone Residencial")
     tel_celular = StringField("Telefone Celular")
     email = EmailField("E-mail")
+
+class AddUsuarioForm(FlaskForm):
+    nome_usuario = StringField("Nome do usuário")
+    email_usuario = EmailField("E-mail")
+    senha_usuario = PasswordField("Senha")
+    tipo_usuario = SelectField("Tipo")
+
+class UpdateUsuarioForm(FlaskForm):
+    nome_usuario = StringField("Nome do usuário")
+    email_usuario = EmailField("E-mail")
+    senha_usuario = PasswordField("Senha")
+    tipo_usuario = SelectField("Tipo")

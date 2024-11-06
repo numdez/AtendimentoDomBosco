@@ -3,7 +3,13 @@ from datetime import datetime
 
 def get_all_chamados():
     db = ModelUser()
-    proc = f"SELECT * FROM tbl_undb_chamados"
+    proc = "SELECT * FROM tbl_undb_chamados"
+    data = ModelUser.call_get_query(db, proc)
+    return data
+
+def get_all_usuarios():
+    db = ModelUser()
+    proc = "SELECT * FROM tbl_undb_usuarios"
     data = ModelUser.call_get_query(db, proc)
     return data
 
@@ -34,6 +40,12 @@ def get_chamados_usuario(id):
 def get_chamados_responsavel(id):
     db = ModelUser()
     proc = f"SELECT * FROM tbl_undb_chamados WHERE id_responsavel = {id} or id_responsavel is null"
+    data = ModelUser.call_get_query(db, proc)
+    return data
+
+def get_all_responsaveis():
+    db = ModelUser()
+    proc = "SELECT id_usuario, nome_usuario FROM tbl_undb_usuarios WHERE tipo_usuario = 'Usuário'"
     data = ModelUser.call_get_query(db, proc)
     return data
 

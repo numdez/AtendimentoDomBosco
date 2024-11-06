@@ -1,0 +1,190 @@
+<!-- templates/formulario.html -->
+{% extends "base.html" %}
+
+{% block title %}Formulário com Assinatura{% endblock %}
+
+{% block styles %}
+<style>
+    .radio-group{
+        display: flex;
+    }
+    .radio-group .form-check {
+        margin-right: 15px;     /* Adiciona espaço entre as opções */
+    }
+
+    #signature-pad {
+        border: 1px solid #000; /* Adiciona uma borda ao canvas */
+        box-sizing: border-box; /* Inclui padding e borda na largura total */
+    }
+
+    .card {
+        background-color: white;
+        border-radius: 10px;
+        padding: 20px;
+        margin-inline: 2vw;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+</style>
+{% endblock %}
+
+{% block navbar %}
+<button class="nav-link text-start text-dark fw-bold nav-button"
+    id="v-pills-home-tab colorButton" data-bs-toggle="pill" data-bs-target="#v-pills-home"
+    type="button" role="tab" onclick="redireciona('home');" aria-controls="v-pills-home" aria-selected="false" title="Home"><i
+    class="bi bi-house"></i> <span class="nav-text">Home</span></button>
+<button class="nav-link active text-start text-dark fw-bold nav-button" id="v-pills-contas-tab colorButton"
+    data-bs-toggle="pill" data-bs-target="#v-pills-meus-dados" type="button" role="tab"
+    aria-controls="v-pills-meus-dados" onclick="redireciona('meusDados')" aria-selected="true" title="Meus Dados"><i class="bi bi-person"></i><span
+        class="nav-text">Meus Dados</span></button>
+<button class="nav-link text-start text-dark fw-bold nav-button" id="v-pills-due-tab colorButton"
+    data-bs-toggle="pill" data-bs-target="#v-pills-due" type="button" role="tab"
+    aria-controls="v-pills-due" onclick="redireciona('documentos')" aria-selected="false" title="Documentos"><i class="bi bi-pass"></i>
+    <span class="nav-text">Documentos</span></button>
+<button class="nav-link text-start text-dark fw-bold nav-button" id="v-pills-opt-tab colorButton"
+    data-bs-toggle="pill" data-bs-target="#v-pills-opt" type="button" role="tab" onclick="redireciona('chamados')"
+    aria-controls="v-pills-opt" aria-selected="true" title="Chamados"><i class="bi bi-list-task"></i>
+    <span class="nav-text">Chamados</span></button>  
+{% if current_user.tipo == 'Administrador' %}
+<button class="nav-link text-start text-start text-dark fw-bold nav-button" id="v-pills-adm-tab colorButton"
+    data-bs-toggle="pill" data-bs-target="#v-pills-adm" type="button" role="tab" onclick="redireciona('admin')"
+    aria-controls="v-pills-adm" aria-selected="false" title="Administrador"><i class="bi bi-person-lock"></i>
+    <span class="nav-text">Administrador</span></button>
+{% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+
+    <div class="pt-4 nav justify-content-end">
+
+        <div class="d-flex">
+            <a class="btn btn-outline-dark m-2" href="{{ url_for('home') }}">Voltar</a>
+        </div>
+    </div>
+    <main class="form-signin w-75 m-auto">
+        <div class="row g-5">
+            <div class="col align-self-start">
+                <form class="needs-validation" novalidate method="POST" id="myForm" enctype="multipart/form-data">
+                    {{ form.csrf_token }}
+                    <div class="card" style="height: 95%;">
+                        <div class="row g-3">
+
+                            <h4 class="mb-3">Endereço</h4>
+
+                            <div class="col-sm-6">
+                                <label for="cepResp" class="form-label">CEP</label>
+                                {{form.cep(class="form-control", oninput="formatarEBuscarCEP(this)", maxlength="9", value=dados['cep'][0], type="text", id="cepResp")}}
+                            </div>
+
+                            <div class="col-sm-6">
+                                <label for="num" class="form-label">Número</label>
+                                {{form.num(class="form-control", type="text", id="num", value=dados['num'][0])}}
+                            </div>
+
+                            <div class="col-sm-12">
+                                <label for="logradouro" class="form-label">Logradouro</label>
+                                {{form.logradouro(class="form-control", type="text", id="logradouro", value=dados['rua'][0])}}
+                            </div>
+
+                            <div class="col-sm-6">
+                                <label for="bairro" class="form-label">Bairro</label>
+                                {{form.bairro(class="form-control", type="text", id="bairro", value=dados['bairro'][0])}}
+                            </div>
+
+                            <div class="col-sm-6">
+                                <label for="complemento" class="form-label">Complemento</label>
+                                {{form.complemento(class="form-control", type="text", id="complemento", value=dados['complemento'][0])}}
+                            </div>
+
+                            <h4 class="mb-3">Contato</h4>
+
+                            <div class="col-sm-6">
+                                <label for="tel_fixo" class="form-label">Telefone Residencial</label>
+                                {{form.tel_fixo(class="form-control", type="text", id="tel_fixo", value=dados['tel_fixo'][0])}}
+                            </div>
+
+                            <div class="col-sm-6">
+                                <label for="telResp" class="form-label">Telefone<strong>*</strong></label>
+                                {{form.tel_celular(class="form-control", type="text", id="telResp", value=dados['tel_celular'][0])}}
+                            </div>
+                            
+                            <div class="col-sm-6">
+                                <label for="emailResp" class="form-label">E-mail</label>
+                                {{form.email(class="form-control", type="email", id="emailResp", value=dados['email'][0])}}
+                            </div>
+  
+                            <div class="col-sm-2 mb-6">
+                                <button class="w-100 btn btn-dark btn-sm" style="margin-top:25%" type="submit">Salvar</button>
+                            </div>
+
+                            <div>
+                                <br>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+</div>
+<script>
+    function redireciona(aba){
+        switch(aba){
+            case 'home':
+                window.location.replace("{{ url_for('home') }}");
+                break;
+            case 'meusDados':
+                window.location.replace("{{ url_for('base_dados') }}");
+                break;
+            case 'all_chamados':
+                window.location.replace("{{ url_for('all_chamados') }}");
+                break;
+            case 'admin':
+                window.location.replace("{{ url_for('all_usuarios') }}");
+                break;
+        }
+            
+    }
+
+    function formatarEBuscarCEP(input) {
+        // Formatação do CEP
+        let cep = input.value.replace(/\D/g, ''); // Remove todos os caracteres não numéricos
+        cep = cep.substring(0, 8); // Limita a string a no máximo 8 dígitos numéricos
+        if (cep.length > 5) {
+            cep = cep.substring(0, 5) + '-' + cep.substring(5); // Insere o hífen após o quinto dígito
+        }
+        input.value = cep; // Atualiza o valor do campo com a formatação
+        // Verifica se o CEP possui 8 dígitos (sem contar o hífen) para buscar automaticamente
+        if (cep.length === 9) {
+            console.log(cep);
+            buscarCEP(cep.replace('-', '')); // Remove o hífen para a busca
+        }
+    }
+
+    function buscarCEP(cep) {
+        console.log(cep);
+        const url = `https://viacep.com.br/ws/${cep}/json/`;
+
+        fetch(url)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Erro ao buscar o CEP");
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.erro) {
+                    alert("CEP não encontrado");
+                } else {
+                    // Atualiza os elementos HTML com as informações do endereço
+                    document.getElementById("logradouro").value = data.logradouro;
+                    document.getElementById("bairro").value = data.bairro;
+                }
+            })
+            .catch(error => {
+                console.error("Erro:", error);
+            });
+    }
+
+</script>
+{% endblock %}

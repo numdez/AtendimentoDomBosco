@@ -2,7 +2,7 @@ from app.model.ModelUser import ModelUser
 from app.controller.auth import Auth
 from app.utils import utiles
 from app.model import functions
-from app.model.forms import LoginForm, AddAtendimentoForm, UpdateAtendimentoForm
+from app.model.forms import LoginForm, AddAtendimentoForm, UpdateAtendimentoForm, AddMeusDadosForm, UpdateMeusDadosForm, AddUsuarioForm, UpdateUsuarioForm
 from app.model.entidades.Usuario import Usuario
 from app.log.logger import log_action
 
@@ -125,6 +125,7 @@ def logout():
 
 
 @app.route("/home", methods=["GET", "POST"])
+@login_required
 def home():
     id_user = session["_user_id"]
     current_user.atualiza_login()
@@ -134,6 +135,7 @@ def home():
     return render_template('base.html')
 
 @app.route('/meusdados', methods=["GET", "POST"])
+@login_required
 def base_dados():
     dados = functions.get_dados(current_user.id)
     if dados:
@@ -144,6 +146,15 @@ def base_dados():
 @app.route('/meusdados/add', methods=["GET", "POST"])
 def add_dados():
     dados = utiles.to_df(functions.get_dados(current_user.id), 'dados')
+    form = AddMeusDadosForm()
+    if form.validate_on_submit():
+        proc = f"""INSERT INTO tbl_undb_responsavel(id_responsavel, rua, num,
+            complemento, bairro, cep, tel_fixo, tel_celular, email
+        ) VALUES '{current_user.id}', '{form.rua.data}', '{form.num.data}', '{form.complemento.data}', 
+        '{form.bairro.data}', '{form.cep.data}', '{form.tel_fixo.data}', '{form.tel_celular.data}', '{form.email.data}'
+        """            
+        functions.run_blank_set(proc)
+        return redirect(url_for('base_dados'))
     return render_template('dados/add_dados.html', dados=dados)
 
 @app.route('/meusdados/view', methods=["GET", "POST"])
@@ -153,14 +164,42 @@ def view_dados():
 
 @app.route('/meusdados/edit', methods=["GET", "POST"])
 def edit_dados():
+    form = UpdateMeusDadosForm()
     dados = utiles.to_df(functions.get_dados(current_user.id), 'dados')
-    dados = utiles.limpaDatas(dados)
+    if form.validate_on_submit():
+        rua = form.logradouro.data if form.logradouro.data != dados['rua'][0] else dados['rua'][0]
+        num = form.num.data if form.num.data != dados['num'][0] else dados['unm'][0]
+        complemento = form.cep.data if form.cep.data != dados['cep'][0] else dados['cep'][0]
+        bairro = form.cep.data if form.cep.data != dados['cep'][0] else dados['cep'][0]
+        cep = form.cep.data if form.cep.data != dados['cep'][0] else dados['cep'][0]
+        tel_fixo = form.cep.data if form.cep.data != dados['cep'][0] else dados['cep'][0]
+        tel_celular = form.cep.data if form.cep.data != dados['cep'][0] else dados['cep'][0]
+        email = form.cep.data if form.cep.data != dados['cep'][0] else dados['cep'][0]
+        proc = f"""
+            UPDATE tbl_undb_responsaveis SET
+            rua = '{rua}', num = '{num}', complemento = '{complemento}', bairro = '{bairro}',
+            cep = '{cep}', tel_fixo = '{tel_fixo}', tel_celular = '{tel_celular}', email = '{email}'
+            WHERE id_responsavel = {current_user.id}
+        """
+        functions.run_blank_set(proc)
+        return redirect(url_for('base_dados'))
+        #terminar / concluir
+    return render_template('dados/edit_dados.html', dados=dados, form=form)
 
 @app.route('/chamado/add', methods=['GET', 'POST'])
 def add_chamado():
     form = AddAtendimentoForm()
-
+    ids = []
+    busca = DataFrame(functions.get_all_responsaveis(), 
+                         columns=['id_usuario', 'nome_usuario'])
+    for index, row in busca.iterrows():
+        adicionar = str(row['id_usuario']) + ' - ' + str(row['nome_usuario'])
+        ids.append(adicionar)  
+    session['options'] = ids
     if form.validate_on_submit():
+        if current_user.tipo != 'Usuário':
+            form.id_usuario.data = form.nome_responsavel.data.split(' - ', 1)[0]
+            form.nome_responsavel.data = form.nome_responsavel.data.split(' - ', 1)[1] 
         assinatura_base64 = request.form['assinaturaCanvasData']
         if assinatura_base64:
             assinatura_base64 = assinatura_base64.split(",")[1]
@@ -176,19 +215,26 @@ def add_chamado():
                     parentesco_responsavel, email_responsavel, telefone_responsavel, celular_responsavel,
                     solicitado_por, questoes, aconselhamento, providencias, observacoes_finais, assinatura_responsavel
                 ) VALUES """
+                args = (current_user.id, datetime.today().date(), form.nome_aluno.data, form.nascimento_aluno.data,
+                        form.serie_aluno.data, form.turma_aluno.data, form.nome_responsavel.data,
+                        form.parentesco_responsavel.data, form.email_responsavel.data, 
+                        form.telefone_responsavel.data, form.celular_responsavel.data, form.solicitado_por.data,
+                        form.questoes.data, form.aconselhamento.data, form.providencias.data, 
+                        form.observacoes_finais.data, assinatura_string
+                    )
             elif current_user.tipo == 'Administrador' or current_user.tipo == 'Atendente':
-                proc = f"""INSERT INTO tbl_undb_chamados(id_responsavel,
+                proc = f"""INSERT INTO tbl_undb_chamados(id_responsavel, id_usuario,
                     data_atendimento, nome_aluno, data_nasc_aluno, serie_aluno, turma_aluno, nome_responsavel, 
                     parentesco_responsavel, email_responsavel, telefone_responsavel, celular_responsavel,
                     solicitado_por, questoes, aconselhamento, providencias, observacoes_finais, assinatura_atendente
                 ) VALUES """
-            args = (current_user.id, datetime.today().date(), form.nome_aluno.data, form.nascimento_aluno.data,
-                    form.serie_aluno.data, form.turma_aluno.data, form.nome_responsavel.data,
-                    form.parentesco_responsavel.data, form.email_responsavel.data, 
-                    form.telefone_responsavel.data, form.celular_responsavel.data, form.solicitado_por.data,
-                    form.questoes.data, form.aconselhamento.data, form.providencias.data, 
-                    form.observacoes_finais.data, assinatura_string
-                )
+                args = (current_user.id, form.id_usuario.data, datetime.today().date(), form.nome_aluno.data, form.nascimento_aluno.data,
+                        form.serie_aluno.data, form.turma_aluno.data, form.nome_responsavel.data,
+                        form.parentesco_responsavel.data, form.email_responsavel.data, 
+                        form.telefone_responsavel.data, form.celular_responsavel.data, form.solicitado_por.data,
+                        form.questoes.data, form.aconselhamento.data, form.providencias.data, 
+                        form.observacoes_finais.data, assinatura_string
+                    )
         else:
             if current_user.tipo == 'Usuário':
                 proc = f"""INSERT INTO tbl_undb_chamados(id_usuario, 
@@ -196,23 +242,31 @@ def add_chamado():
                     parentesco_responsavel, email_responsavel, telefone_responsavel, celular_responsavel,
                     solicitado_por, questoes, aconselhamento, providencias, observacoes_finais
                 ) VALUES """
-            elif current_user.tipo == 'Administrador' or current_user.tipo == 'Atendente':
-                proc = f"""INSERT INTO tbl_undb_chamados(id_responsavel,
-                    data_atendimento, nome_aluno, data_nasc_aluno, serie_aluno, turma_aluno, nome_responsavel, 
-                    parentesco_responsavel, email_responsavel, telefone_responsavel, celular_responsavel,
-                    solicitado_por, questoes, aconselhamento, providencias, observacoes_finais
-                ) VALUES """
-            args = (current_user.id, datetime.today().date(), form.nome_aluno.data, form.nascimento_aluno.data,
+                args = (current_user.id, datetime.today().date(), form.nome_aluno.data, form.nascimento_aluno.data,
                     form.serie_aluno.data, form.turma_aluno.data, form.nome_responsavel.data,
                     form.parentesco_responsavel.data, form.email_responsavel.data, 
                     form.telefone_responsavel.data, form.celular_responsavel.data, form.solicitado_por.data,
                     form.questoes.data, form.aconselhamento.data, form.providencias.data, 
                     form.observacoes_finais.data
                 )
+            elif current_user.tipo == 'Administrador' or current_user.tipo == 'Atendente':
+                proc = f"""INSERT INTO tbl_undb_chamados(id_responsavel, id_usuario,
+                    data_atendimento, nome_aluno, data_nasc_aluno, serie_aluno, turma_aluno, nome_responsavel, 
+                    parentesco_responsavel, email_responsavel, telefone_responsavel, celular_responsavel,
+                    solicitado_por, questoes, aconselhamento, providencias, observacoes_finais
+                ) VALUES """
+                args = (current_user.id, form.id_usuario.data, datetime.today().date(), form.nome_aluno.data, form.nascimento_aluno.data,
+                    form.serie_aluno.data, form.turma_aluno.data, form.nome_responsavel.data,
+                    form.parentesco_responsavel.data, form.email_responsavel.data, 
+                    form.telefone_responsavel.data, form.celular_responsavel.data, form.solicitado_por.data,
+                    form.questoes.data, form.aconselhamento.data, form.providencias.data, 
+                    form.observacoes_finais.data
+                )
+            
         id = functions.run_blank_query(proc, args)
         return redirect(url_for('home'))
         #return redirect(url_for('view_atendimento', id_atendimento=id))
-    return render_template('chamados/add_chamado.html', form=form)
+    return render_template('chamados/add_chamado.html', form=form, options=ids)
 
 @app.route('/chamado/view/<id_chamado>', methods=["GET", "POST"])
 def view_chamado(id_chamado):
@@ -321,30 +375,34 @@ def edit_chamado(id_chamado):
         ass_atendente = ''
     return render_template('/chamados/edit_chamado.html', chamado=chamado, form=form, ass_responsavel=ass_responsavel, ass_atendente=ass_atendente)
 
+@app.route('/usuarios', methods=["GET", "POST"])
+def all_usuarios():
+    if current_user.tipo != 'Administrador':
+        return redirect(url_for('home'))
+    usuarios = utiles.to_df(functions.get_all_usuarios(), 'usuario')
+    return render_template('usuarios.html', usuarios=usuarios)
 
+@app.route('/usuarios/add', methods=["GET", "POST"])
+def add_usuario():
+    if current_user.tipo != 'Administrador':
+        return redirect(url_for('home'))
+    form = AddUsuarioForm()
+    form.tipo_usuario.choices = ["", "Usuário", "Atendente", "Administrador"]
+    if form.validate_on_submit():
+        senha_usuario = Usuario.create_password(form.senha_usuario.data)
+        proc = """
+            INSERT INTO tbl_undb_usuarios (nome_usuario, email_usuario, senha_usuario, tipo_usuario)
+            VALUES"""
+        args = (form.nome_usuario.data, form.email_usuario.data, senha_usuario, form.tipo_usuario.data)
+        functions.run_blank_query(proc, args)
+        return redirect(url_for('all_usuarios'))
+    # terminar / concluir
+    return render_template('usuarios/add_usuario.html', form=form)
 
-@app.route('/teste/<id_chamado>')
-def teste(id_chamado):
-    imagem = utiles.bytes_to_img(functions.run_blank_get(f'SELECT assinatura_atendente FROM tbl_undb_chamados WHERE id_chamado = {id_chamado}')[0][0])
-    image = Image.open(imagem)
-    image.show()
-    return redirect(url_for('home'))
-
-@app.route('/dashboard')
-def dashboard():
-    return render_template('dashboard.html')
-
-@app.route('/atendimentos')
-def atendimentos():
-    return render_template('atendimentos.html')
-
-@app.route('/requisicoes')
-def requisicoes():
-    return render_template('requisicoes.html')
-
-@app.route('/requisitar')
-def requisitar():
-    return render_template('requisitar.html')
+@app.route('/usuarios/view/<id_usuario>', methods=["GET", "POST"])
+def view_usuario(id_usuario):
+    usuario = utiles.to_df(functions.get_usuario(id_usuario), 'usuario')
+    return render_template('usuarios/view_usuario.html', usuario=usuario)
 
 # FUNCTIONS HTTP
 def status_404(error):
@@ -364,4 +422,3 @@ def erro_interno(error):
 @app.errorhandler(401)
 def page_not_auto(error):
     return "<h3>Acesso não Autorizado!</h3>", 401
-

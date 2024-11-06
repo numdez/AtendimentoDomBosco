@@ -137,10 +137,6 @@
                                 data-bs-toggle="pill" data-bs-target="#v-pills-meus-dados" type="button" role="tab"
                                 aria-controls="v-pills-meus-dados" onclick="redireciona('meusDados')" aria-selected="false" title="Meus Dados"><i class="bi bi-person"></i><span
                                     class="nav-text">Meus Dados</span></button>
-                            <button class="nav-link text-start text-dark fw-bold nav-button" id="v-pills-due-tab colorButton"
-                                data-bs-toggle="pill" data-bs-target="#v-pills-due" type="button" role="tab"
-                                aria-controls="v-pills-due" onclick="redireciona('documentos')" aria-selected="false" title="Documentos"><i class="bi bi-pass"></i>
-                                <span class="nav-text">Documentos</span></button>
                             <button class="nav-link text-start text-dark fw-bold nav-button" id="v-pills-opt-tab colorButton"
                                 data-bs-toggle="pill" data-bs-target="#v-pills-opt" type="button" role="tab" onclick="redireciona('all_chamados')"
                                 aria-controls="v-pills-opt" aria-selected="false" title="Chamados"><i class="bi bi-list-task"></i>
@@ -161,22 +157,23 @@
                     <div class="tab-pane fade show active" id="v-pills-home" role="tabpanel"
                         aria-labelledby="v-pills-home-tab" tabindex="0">
                         <section class="cards">
-                            <div class="card">
-                                <img src="../static/resources/aluno.png" onclick="location.href='meusdados';" 
-                                alt="Icone Aluno">
-                                <h2>ALUNO</h2>
-                                <p>Atualizar informações importantes do aluno, como endereço, contatos de emergência e dados médicos, de forma simples e rápida.</p>
+                            <div class="card" onclick="location.href='meusdados';" style="cursor: pointer;">
+                                <img src="../static/resources/aluno.png" alt="Icone Aluno">
+                                <h2>Meus Dados</h2>
+                                <p>Atualizar informações de endereço e contato de forma simples e rápida.</p>
                             </div>
                             <div class="card" onclick="location.href='view/chamados';" style="cursor: pointer;">
                                 <img src="../static/resources/atendimento.png" alt="Icone Atendimento">
                                 <h2>ATENDIMENTO</h2>
                                 <p>Iniciar um atendimento para tirar dúvidas sobre o aluno(a), a escola e a metodologia.</p>
                             </div>
+                            <!--
                             <div class="card">
                                 <img src="../static/resources/documentos.png" alt="Icone Documentos">
                                 <h2>DOCUMENTOS</h2>
                                 <p>Visualizar documentos que foram realizados, documentos pendentes e não finalizados.</p>
                             </div>
+                            -->
                         </section>
                     </div>
                     {% endblock %}
@@ -221,6 +218,12 @@
                     break;
                 case 'meusDados':
                     window.location.replace("{{ url_for('base_dados') }}");
+                    break;
+                case 'all_chamados':
+                    window.location.replace("{{ url_for('all_chamados') }}");
+                    break;
+                case 'admin':
+                    window.location.replace("{{ url_for('all_usuarios') }}");
                     break;
             }
             
