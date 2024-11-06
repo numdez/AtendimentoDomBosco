@@ -23,6 +23,11 @@ def to_df(data, tabela):
                         'questoes', 'aconselhamento', 'providencias', 'observacoes_finais', 
                         'assinatura_responsavel', 'assinatura_atendente']
                 )
+            case 'dados':
+                data = pd.DataFrame(
+                    data,
+                    columns=['id_responsavel', 'rua', 'num', 'complemento', 'bairro', 'cep', 'tel_fixo', 'tel_celular', 'email']
+                )
     else:
         match tabela.lower():
             case 'usuario':
@@ -36,6 +41,10 @@ def to_df(data, tabela):
                         'email_responsavel', 'telefone_responsavel', 'celular_responsavel', 'solicitado_por',
                         'questoes', 'aconselhamento', 'providencias', 'observacoes_finais', 
                         'assinatura_responsavel', 'assinatura_atendente']
+                )
+            case 'dados':
+                data = pd.DataFrame(
+                    columns=['id_responsavel', 'rua', 'num', 'complemento', 'bairro', 'cep', 'tel_fixo', 'tel_celular', 'email']
                 )
     return data
 

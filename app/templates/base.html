@@ -162,7 +162,8 @@
                         aria-labelledby="v-pills-home-tab" tabindex="0">
                         <section class="cards">
                             <div class="card">
-                                <img src="../static/resources/aluno.png" onclick="location.href='meusdados';" alt="Icone Aluno">
+                                <img src="../static/resources/aluno.png" onclick="location.href='meusdados';" 
+                                alt="Icone Aluno">
                                 <h2>ALUNO</h2>
                                 <p>Atualizar informações importantes do aluno, como endereço, contatos de emergência e dados médicos, de forma simples e rápida.</p>
                             </div>
@@ -219,7 +220,7 @@
                     window.location.replace("{{ url_for('home') }}");
                     break;
                 case 'meusDados':
-                    window.location.replace("{{ url_for('requisicoes') }}");
+                    window.location.replace("{{ url_for('base_dados') }}");
                     break;
             }
             

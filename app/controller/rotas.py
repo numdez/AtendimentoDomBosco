@@ -134,10 +134,27 @@ def home():
     return render_template('base.html')
 
 @app.route('/meusdados', methods=["GET", "POST"])
-def meus_dados():
-    dados = utiles.to_df(functions.get_chamado(current_user.id), 'usuario')
+def base_dados():
+    dados = functions.get_dados(current_user.id)
+    if dados:
+        return redirect(url_for('view_dados'))
+    else:
+        return redirect(url_for('add_dados'))
+
+@app.route('/meusdados/add', methods=["GET", "POST"])
+def add_dados():
+    dados = utiles.to_df(functions.get_dados(current_user.id), 'dados')
+    return render_template('dados/add_dados.html', dados=dados)
+
+@app.route('/meusdados/view', methods=["GET", "POST"])
+def view_dados():
+    dados = utiles.to_df(functions.get_dados(current_user.id), 'dados')
+    return render_template('dados/view_dados.html', dados=dados)
+
+@app.route('/meusdados/edit', methods=["GET", "POST"])
+def edit_dados():
+    dados = utiles.to_df(functions.get_dados(current_user.id), 'dados')
     dados = utiles.limpaDatas(dados)
-    return render_template('meusdados.html', dados=dados)
 
 @app.route('/chamado/add', methods=['GET', 'POST'])
 def add_chamado():
